@@ -12,7 +12,7 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import RectanglesBackground from "./components/background";
+import RectanglesBackground from "./_components/background";
 import { FcGoogle } from "react-icons/fc";
 
 const signInSchema = z.object({
@@ -56,7 +56,7 @@ export default function SignInPage() {
     startTransition(async () => {
       try {
         await authClient.signIn.email(values);
-        router.push("/");
+        router.push("/dashboard");
       } catch (err) {
         const message = err instanceof Error ? err.message : "Signin failed";
         setServerError(message);

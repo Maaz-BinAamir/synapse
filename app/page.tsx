@@ -1,8 +1,8 @@
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import DemoVideo from "./components/demo";
-import FeaturesSection from "./components/features";
-import Footer from "./components/footer";
+import Navbar from "./_components/Navbar";
+import Hero from "./_components/Hero";
+import DemoVideo from "./_components/DemoVideo";
+import FeaturesSection from "./_components/Features";
+import Footer from "./_components/Footer";
 
 export default function Home() {
   return (

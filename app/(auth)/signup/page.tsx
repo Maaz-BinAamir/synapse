@@ -16,7 +16,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/auth-client";
 
-import RectanglesBackground from "./components/background";
+import RectanglesBackground from "./_components/background";
 import { motion, Variants } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 
@@ -65,8 +65,10 @@ export default function SignUpPage() {
     setServerError(null);
     startTransition(async () => {
       try {
-        await authClient.signUp.email(values);
-        router.push("/");
+        console.log("Signing up with values:", values);
+        const res = await authClient.signUp.email(values);
+        console.log("Signup response:", res);
+        router.push("/dashboard");
       } catch (err) {
         const message = err instanceof Error ? err.message : "Signup failed";
         setServerError(message);
