@@ -1,24 +1,28 @@
 "use client";
 
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/auth-client";
-import Link from "next/link";
-import Image from "next/image";
+
+import RectanglesBackground from "./components/background";
 import { motion, Variants } from "framer-motion";
-import RectanglesBackground from "./RectanglesBackground";
 import { FcGoogle } from "react-icons/fc";
 
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Enter a valid email"),
+  email: z.email("Enter a valid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 

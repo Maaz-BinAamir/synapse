@@ -1,8 +1,9 @@
-import Navbar from "./landing Components/Navbar";
-import Hero from "./landing Components/Hero";
-import DemoVideo from "./landing Components/demo";
-import FeaturesSection from "./landing Components/features";
-import Footer from "./landing Components/footer";
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import DemoVideo from "./components/demo";
+import FeaturesSection from "./components/features";
+import Footer from "./components/footer";
+
 export default function Home() {
   return (
     <div className="w-full min-h-screen flex flex-col items-center">

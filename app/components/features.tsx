@@ -1,10 +1,7 @@
-"use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function FeaturesSection() {
-  const router = useRouter();
-
   return (
     <section
       id="features"
@@ -169,12 +166,12 @@ export default function FeaturesSection() {
               discussions, and engage with your peers in meaningful
               conversations.
             </p>
-            <button
+            <Link
+              href="/signup"
               className="px-6 py-3 bg-[#9D83C4] text-white rounded-xl hover:bg-[#7b60a4] scale-103 transition"
-              onClick={() => router.push("/signup")}
             >
               Start exploring
-            </button>
+            </Link>
           </div>
 
           <Image

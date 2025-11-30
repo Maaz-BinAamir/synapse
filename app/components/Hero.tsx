@@ -1,10 +1,7 @@
-"use client";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Hero() {
-  const router = useRouter();
-
   return (
     <section
       id="get-started"
@@ -42,7 +39,7 @@ export default function Hero() {
         border border-white/30 z-10"
       >
         {/* Panda */}
-        <div className="flex-shrink-0 w-1/5 md:w-1/6">
+        <div className="shrink-0 w-1/5 md:w-1/6">
           <Image
             src="/pandaHero.png"
             width={220}
@@ -66,7 +63,7 @@ export default function Hero() {
         </div>
 
         {/* Medical Illustration */}
-        <div className="flex-shrink-0 w-1/5 md:w-1/6 mt-6 md:mt-0">
+        <div className="shrink-0 w-1/5 md:w-1/6 mt-6 md:mt-0">
           <Image
             src="/stethoscope.png"
             width={220}
@@ -78,13 +75,13 @@ export default function Hero() {
       </div>
 
       {/* Button */}
-      <button
+      <Link
+        href="/signup"
         className="absolute bottom-22 z-10 bg-[#A88BD4] text-white px-8 md:px-10 py-2.5 md:py-3 rounded-xl 
         text-base md:text-lg shadow-md hover:scale-105 transition"
-        onClick={() => router.push("/signup")}
       >
         Get Started
-      </button>
+      </Link>
     </section>
   );
 }

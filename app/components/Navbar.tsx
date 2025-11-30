@@ -1,10 +1,6 @@
-"use client";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Navbar() {
-  const router = useRouter();
-
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white shadow-sm flex items-center justify-between py-4 px-6">
       {/* Logo */}
@@ -27,18 +23,18 @@ export default function Navbar() {
 
       {/* Buttons */}
       <div className="flex items-center gap-3">
-        <button
+        <Link
           className="px-5 py-2 rounded-md bg-[#711B9C] text-white  hover:scale-105 transition"
-          onClick={() => router.push("/signin")}
-        >
-          Login
-        </button>
-        <button
-          className="px-5 py-2 rounded-md bg-[#76D2C0] text-white  hover:scale-105 transition"
-          onClick={() => router.push("/signup")}
+          href="/signup"
         >
           Sign up
-        </button>
+        </Link>
+        <Link
+          className="px-5 py-2 rounded-md bg-[#76D2C0] text-white  hover:scale-105 transition"
+          href="/signin"
+        >
+          Sign In
+        </Link>
       </div>
     </nav>
   );

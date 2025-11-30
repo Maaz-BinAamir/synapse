@@ -12,7 +12,7 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
-import RectanglesBackground from "./RectanglesBackground";
+import RectanglesBackground from "./components/background";
 import { FcGoogle } from "react-icons/fc";
 
 const signInSchema = z.object({

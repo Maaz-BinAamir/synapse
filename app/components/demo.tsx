@@ -14,7 +14,7 @@ export default function DemoVideo() {
       {/* Video Container */}
       <div
         className="w-full max-w-[1161px] aspect-video rounded-[28px]
-        bg-gradient-to-br from-[#F3E8FF] via-[#D8B4FE] to-[#D8B4FE]
+        bg-linear-to-br from-[#F3E8FF] via-[#D8B4FE] to-[#D8B4FE]
         flex items-center justify-center relative"
       >
         {/* Play Button */}
