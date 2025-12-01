@@ -12,23 +12,23 @@ export default function Hero() {
     >
       {/* Left Dashes */}
       <div className="absolute left-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-1">
-        <div className="h-[0.25rem] w-32 md:w-36 bg-gradient-to-r from-[#FFEDD5] to-[#FED7AA] rounded-full"></div>
-        <div className="h-[0.25rem] w-24 md:w-28 bg-gradient-to-r from-[#B4DAFE] to-[#5A9DDB] rounded-full mt-1"></div>
+        <div className="h-1 w-32 md:w-36 bg-linear-to-r from-[#FFEDD5] to-[#FED7AA] rounded-full"></div>
+        <div className="h-1 w-24 md:w-28 bg-linear-to-r from-[#B4DAFE] to-[#5A9DDB] rounded-full mt-1"></div>
       </div>
 
       {/* Right Dashes */}
       <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex flex-col gap-1">
-        <div className="h-[0.25rem] w-32 md:w-36 bg-gradient-to-l from-[#FFEDD5] to-[#FED7AA] rounded-full"></div>
-        <div className="h-[0.25rem] w-24 md:w-28 bg-gradient-to-l from-[#B4DAFE] to-[#5A9DDB] rounded-full mt-1"></div>
+        <div className="h-1 w-32 md:w-36 bg-linear-to-l from-[#FFEDD5] to-[#FED7AA] rounded-full"></div>
+        <div className="h-1 w-24 md:w-28 bg-linear-to-l from-[#B4DAFE] to-[#5A9DDB] rounded-full mt-1"></div>
       </div>
 
       {/* Soft background blobs */}
       <div
-        className="absolute top-10 right-10 w-56 md:w-64 h-24 md:h-28 bg-gradient-to-r 
+        className="absolute top-10 right-10 w-56 md:w-64 h-24 md:h-28 bg-linear-to-r 
         from-[#e9faff] to-[#f7fff2] rounded-3xl blur-xl opacity-70"
       />
       <div
-        className="absolute bottom-16 left-10 w-72 md:w-80 h-32 md:h-40 bg-gradient-to-r 
+        className="absolute bottom-16 left-10 w-72 md:w-80 h-32 md:h-40 bg-linear-to-r 
         from-[#fbdfff] to-[#fff8fb] rounded-3xl blur-2xl opacity-60"
       />
 

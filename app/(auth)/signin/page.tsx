@@ -55,7 +55,13 @@ export default function SignInPage() {
     setServerError(null);
     startTransition(async () => {
       try {
-        await authClient.signIn.email(values);
+        const response = await authClient.signIn.email(values);
+        console.log("Signin response:", response);
+
+        if (response.error) {
+          throw Error(response.error.message || "Signin failed");
+        }
+
         router.push("/dashboard");
       } catch (err) {
         const message = err instanceof Error ? err.message : "Signin failed";
@@ -76,23 +82,26 @@ export default function SignInPage() {
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="w-full"
+          className="w-1/2"
         >
-          <Card className="bg-[#ffffff00] border border-transparent shadow-none p-8 rounded-lg w-full flex flex-col justify-center">
+          <Card className="bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl p-8 rounded-2xl w-full flex flex-col justify-center">
             <CardHeader>
               <motion.div variants={popIn}>
                 <CardTitle className="text-white text-4xl text-center">
-                  Log In
+                  Sign In
                 </CardTitle>
               </motion.div>
             </CardHeader>
 
-            <form onSubmit={onSubmit} className="space-y-4">
-              <motion.div variants={popIn}>
-                <Label className="flex flex-col gap-1">
+            <form
+              onSubmit={onSubmit}
+              className="space-y-4 flex flex-col items-center"
+            >
+              <motion.div variants={popIn} className="w-4/5">
+                <Label className="flex flex-col gap-1 items-start">
                   <span className="text-white text-base">Email</span>
                   <Input
-                    className="w-1/2 border border-white focus:border-white focus:ring-2 focus:ring-white focus:ring-opacity-50 shadow-sm focus:shadow-md"
+                    className="w-full border border-white focus-visible:border-[#9D83C4] focus-visible:ring-[#9D83C4]/20"
                     type="email"
                     {...register("email")}
                     disabled={isPending}
@@ -105,11 +114,11 @@ export default function SignInPage() {
                 </Label>
               </motion.div>
 
-              <motion.div variants={popIn}>
-                <Label className="flex flex-col gap-1">
+              <motion.div variants={popIn} className="w-4/5">
+                <Label className="flex flex-col gap-1 items-start">
                   <span className="text-white text-base">Password</span>
                   <Input
-                    className="w-1/2 border border-white focus:border-white focus:ring-2 focus:ring-white focus:ring-opacity-50 shadow-sm focus:shadow-md"
+                    className="w-full border border-white focus-visible:border-[#9D83C4] focus-visible:ring-[#9D83C4]/20"
                     type="password"
                     {...register("password")}
                     disabled={isPending}
@@ -121,9 +130,13 @@ export default function SignInPage() {
                   )}
                 </Label>
               </motion.div>
-
               {serverError && (
-                <motion.p variants={popIn} className="text-sm text-red-500">
+                <motion.p
+                  variants={popIn}
+                  initial="hidden"
+                  animate="visible"
+                  className="text-sm text-red-500"
+                >
                   {serverError}
                 </motion.p>
               )}
@@ -149,7 +162,7 @@ export default function SignInPage() {
 
               <motion.div variants={popIn} className="flex justify-center">
                 <Button className="bg-[#9D83C4] hover:bg-[#7a64a8] border border-white px-10 py-5 text-xl">
-                  Login with Google
+                  Signin with Google
                   <FcGoogle size={20} />
                 </Button>
               </motion.div>

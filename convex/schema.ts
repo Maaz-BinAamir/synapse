@@ -3,7 +3,7 @@ import { v } from "convex/values";
 
 export default defineSchema({
   posts: defineTable({
-    authorId: v.id("users"),
+    authorId: v.string(),
     title: v.string(),
     body: v.string(),
     images: v.optional(v.array(v.string())),
@@ -11,6 +11,5 @@ export default defineSchema({
     commentCount: v.number(),
     likeCount: v.number(),
     viewCount: v.number(),
-    createdAt: v.number(),
-  }),
+  }).index("by_author", ["authorId"]),
 });

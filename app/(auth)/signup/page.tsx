@@ -68,6 +68,11 @@ export default function SignUpPage() {
         console.log("Signing up with values:", values);
         const res = await authClient.signUp.email(values);
         console.log("Signup response:", res);
+
+        if (res.error) {
+          throw Error(res.error.message || "Signup failed");
+        }
+
         router.push("/dashboard");
       } catch (err) {
         const message = err instanceof Error ? err.message : "Signup failed";
@@ -108,7 +113,7 @@ export default function SignUpPage() {
           initial="hidden"
           animate="visible"
         >
-          <Card className="bg-[#ffffff00] border border-transparent shadow-none p-8 rounded-lg w-full flex flex-col justify-center">
+          <Card className="bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl p-8 rounded-2xl w-1/2 flex flex-col justify-center">
             <motion.div variants={popIn}>
               <CardHeader>
                 <CardTitle className="text-white text-4xl text-center">
@@ -120,13 +125,13 @@ export default function SignUpPage() {
             <motion.form
               variants={staggerContainer}
               onSubmit={onSubmit}
-              className="space-y-4"
+              className="space-y-4 flex flex-col items-center"
             >
-              <motion.div variants={popIn}>
-                <Label className="flex flex-col gap-1">
+              <motion.div variants={popIn} className="w-4/5">
+                <Label className="flex flex-col gap-1 items-start">
                   <span className="text-white text-base">Name</span>
                   <Input
-                    className="w-1/2 border border-white focus:border-white focus:ring-2 focus:ring-white focus:ring-opacity-50 shadow-sm focus:shadow-md"
+                    className="w-full border border-white focus-visible:border-[#9D83C4] focus-visible:ring-[#9D83C4]/20"
                     type="text"
                     {...register("name")}
                     disabled={isPending}
@@ -139,13 +144,11 @@ export default function SignUpPage() {
                 </Label>
               </motion.div>
 
-              <motion.div variants={popIn}>
-                <Label className="flex flex-col gap-1 ">
-                  <span className="text-white text-base items-start">
-                    Email
-                  </span>
+              <motion.div variants={popIn} className="w-4/5">
+                <Label className="flex flex-col gap-1 items-start">
+                  <span className="text-white text-base">Email</span>
                   <Input
-                    className="w-1/2 border border-white focus:border-white focus:ring-2 focus:ring-white focus:ring-opacity-50 shadow-sm focus:shadow-md"
+                    className="w-full border border-white focus-visible:border-[#9D83C4] focus-visible:ring-[#9D83C4]/20"
                     type="email"
                     {...register("email")}
                     disabled={isPending}
@@ -158,11 +161,11 @@ export default function SignUpPage() {
                 </Label>
               </motion.div>
 
-              <motion.div variants={popIn}>
-                <Label className="flex flex-col gap-1">
+              <motion.div variants={popIn} className="w-4/5">
+                <Label className="flex flex-col gap-1 items-start">
                   <span className="text-white text-base">Password</span>
                   <Input
-                    className="w-1/2 border border-white focus:border-white focus:ring-2 focus:ring-white focus:ring-opacity-50 shadow-sm focus:shadow-md mb-8"
+                    className="w-full border border-white focus-visible:border-[#9D83C4] focus-visible:ring-[#9D83C4]/20"
                     type="password"
                     {...register("password")}
                     disabled={isPending}
@@ -177,7 +180,12 @@ export default function SignUpPage() {
 
               {/* Server error */}
               {serverError && (
-                <motion.p variants={popIn} className="text-sm text-red-500">
+                <motion.p
+                  variants={popIn}
+                  initial="hidden"
+                  animate="visible"
+                  className="text-sm text-red-500"
+                >
                   {serverError}
                 </motion.p>
               )}
