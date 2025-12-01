@@ -20,7 +20,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -36,6 +35,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import Image from "next/image";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -163,7 +163,7 @@ export default function CreatePostPage() {
                         key={index}
                         className="relative w-24 h-24 rounded-lg border-2 border-[#9D83C4]/20 overflow-hidden group"
                       >
-                        <img
+                        <Image
                           src={URL.createObjectURL(image)}
                           alt={`Preview ${index + 1}`}
                           className="w-full h-full object-cover"
