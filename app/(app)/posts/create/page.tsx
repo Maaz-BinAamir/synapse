@@ -35,15 +35,21 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { toast } from "sonner";
 import Image from "next/image";
 
 const formSchema = z.object({
   title: z.string().min(2, {
     message: "Title must be at least 2 characters.",
   }),
-  body: z.string().min(10, {
-    message: "Body must be at least 10 characters.",
-  }),
+  body: z
+    .string()
+    .min(1)
+    .refine((val) => val.split(/\s+/).length >= 5, {
+      message: "Content must be at least 5 words.",
+    }),
+  tags: z.array(z.string()).optional(),
+  images: z.array(z.string()).optional(),
 });
 
 export default function CreatePostPage() {
@@ -121,6 +127,8 @@ export default function CreatePostPage() {
         images: storageIds,
       });
 
+      toast.success("Post has been created succesfully");
+
       router.push("/dashboard");
     } catch (error) {
       console.error("Failed to create post:", error);
@@ -166,6 +174,8 @@ export default function CreatePostPage() {
                         <Image
                           src={URL.createObjectURL(image)}
                           alt={`Preview ${index + 1}`}
+                          width={96}
+                          height={96}
                           className="w-full h-full object-cover"
                         />
                         <button
