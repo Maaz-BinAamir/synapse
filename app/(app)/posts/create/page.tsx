@@ -39,16 +39,18 @@ import { toast } from "sonner";
 import Image from "next/image";
 
 const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
-  }),
+  title: z
+    .string()
+    .min(1, { message: "Title is required." })
+    .max(200, { message: "Title must be at most 200 characters." }),
   body: z
     .string()
-    .min(1)
-    .refine((val) => val.split(/\s+/).length >= 5, {
-      message: "Content must be at least 5 words.",
-    }),
-  tags: z.array(z.string()).optional(),
+    .min(1, { message: "Body is required." })
+    .max(5000, { message: "Body must be at most 5000 characters." }),
+  tags: z
+    .array(z.string())
+    .max(5, { message: "You can add up to 5 tags." })
+    .optional(),
   images: z.array(z.string()).optional(),
 });
 
