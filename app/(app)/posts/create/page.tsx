@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import {
@@ -126,7 +127,7 @@ export default function CreatePostPage() {
         title: values.title,
         body: values.body,
         tags: tags.length > 0 ? tags : undefined,
-        images: storageIds,
+        images: storageIds as Id<"_storage">[],
       });
 
       toast.success("Post has been created succesfully");

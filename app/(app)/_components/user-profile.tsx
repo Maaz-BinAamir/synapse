@@ -22,26 +22,48 @@ interface UserProfileProps {
 }
 
 export default function UserProfile({ username }: UserProfileProps) {
-  const currentUser = useQuery(api.auth.getCurrentUser);
-  const profileUser = useQuery(
+  const currentUserData = useQuery(api.users.getCurrentUserProfile);
+  const otherUserData = useQuery(
     api.users.getUserByName,
     username ? { username } : "skip"
   );
 
-  const user = username ? profileUser : currentUser;
+  const currentUser = currentUserData?.user;
+
+  // Check if data is still loading
+  const isLoading = username
+    ? otherUserData === undefined
+    : currentUserData === undefined;
+
+  const user = username
+    ? otherUserData?.user
+      ? {
+          ...otherUserData.user,
+          avatar: otherUserData.profile?.avatar,
+          bio: otherUserData.profile?.bio,
+        }
+      : null
+    : currentUser
+      ? {
+          ...currentUser,
+          avatar: currentUserData?.profile?.avatar,
+          bio: currentUserData?.profile?.bio,
+        }
+      : null;
+
   const isOwnProfile = currentUser?._id === user?._id;
 
   const followers = useQuery(
     api.followers.getFollowers,
-    user ? { userId: user._id } : "skip"
+    user?._id ? { userId: user._id } : "skip"
   );
   const following = useQuery(
     api.followers.getFollowing,
-    user ? { userId: user._id } : "skip"
+    user?._id ? { userId: user._id } : "skip"
   );
   const posts = useQuery(
     api.posts.getPostsByAuthor,
-    user ? { authorId: user._id } : "skip"
+    user?._id ? { authorId: user._id } : "skip"
   );
 
   const isFollowing = useQuery(
@@ -63,7 +85,7 @@ export default function UserProfile({ username }: UserProfileProps) {
     }
   };
 
-  if (user === undefined) {
+  if (isLoading) {
     return (
       <div className="min-h-full w-full bg-linear-to-br from-[#F7E8FF] via-white to-[#E0F7FA] p-6 md:p-8">
         <div className="max-w-4xl mx-auto space-y-8">
@@ -125,7 +147,11 @@ export default function UserProfile({ username }: UserProfileProps) {
         <Card className="border-none shadow-none bg-transparent">
           <CardContent className="flex flex-col md:flex-row items-center md:items-start gap-8 p-0">
             <Avatar className="w-32 h-32 border-4 border-white shadow-lg ring-2 ring-[#9D83C4]/20">
-              <AvatarImage src={user.image} alt={user.name} />
+              <AvatarImage
+                src={user.avatar}
+                alt={user.name}
+                className="object-cover"
+              />
               <AvatarFallback className="text-4xl bg-[#9D83C4]/10 text-[#9D83C4]">
                 {user.name?.charAt(0).toUpperCase()}
               </AvatarFallback>
@@ -191,6 +217,7 @@ export default function UserProfile({ username }: UserProfileProps) {
                   }
                 />
               </div>
+              <p>{user.bio}</p>
             </div>
           </CardContent>
         </Card>
@@ -237,7 +264,7 @@ function FollowListDialog({
             {users?.map((user) => (
               <div key={user?._id} className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarImage src={user?.image} />
+                  <AvatarImage src={user?.avatar} />
                   <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">

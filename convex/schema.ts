@@ -30,6 +30,7 @@ export default defineSchema({
     userId: v.string(),
     username: v.string(),
     bio: v.string(),
-    avatarUrl: v.optional(v.id("_storage")),
-  }).index("by_user", ["userId"]),
+    interests: v.optional(v.array(v.string())),
+    avatar: v.optional(v.id("_storage")),
+  }).index("by_user", ["userId"]).index("by_username", ["username"]),
 });
