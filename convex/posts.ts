@@ -12,7 +12,20 @@ export const get = query({
   },
 });
 
-export const getAuthorPosts = query({
+
+
+export const getPostsByAuthor = query({
+  args: { authorId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("posts")
+      .withIndex("by_author", (q) => q.eq("authorId", args.authorId))
+      .order("desc")
+      .collect();
+  },
+});
+
+export const getCurrentUserPosts = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -60,7 +73,7 @@ export const create = mutation({
   args: {
     title: v.string(),
     body: v.string(),
-    images: v.optional(v.array(v.string())),
+    images: v.optional(v.array(v.id("_storage"))),
     tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
