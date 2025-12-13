@@ -4,6 +4,7 @@ import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import { query } from "./_generated/server";
 import { betterAuth } from "better-auth";
+import { v } from "convex/values";
 
 const siteUrl = process.env.SITE_URL!;
 
@@ -35,11 +36,29 @@ export const createAuth = (
   });
 };
 
-// Example function for getting the current user
-// Feel free to edit, omit, etc.
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
-    return authComponent.getAuthUser(ctx);
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return identity;
+    }
+    return ctx.runQuery(components.betterAuth.adapter.findOne, {
+      model: "user",
+      where: [{ field: "_id", value: identity.subject }],
+    });
+  },
+});
+
+// Get user by ID
+export const getUserById = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    // Use _id field which should have an index
+    return ctx.runQuery(components.betterAuth.adapter.findOne, {
+      model: "user",
+      where: [{ field: "_id", value: args.userId }],
+    });
   },
 });

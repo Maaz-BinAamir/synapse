@@ -27,6 +27,35 @@ export const getAuthorPosts = query({
   },
 });
 
+export const getTrending = query({
+  args: {},
+  handler: async (ctx) => {
+    // Todo: improve trending algorithm
+    return await ctx.db
+      .query("posts")
+      .withIndex("by_like_count")
+      .order("desc")
+      .take(5);
+  },
+});
+
+export const getLatest = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("posts").order("desc").take(5);
+  },
+});
+
+export const search = query({
+  args: { query: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("posts")
+      .withSearchIndex("search_title", (q) => q.search("title", args.query))
+      .take(20);
+  },
+});
+
 export const create = mutation({
   args: {
     title: v.string(),
