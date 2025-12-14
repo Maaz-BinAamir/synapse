@@ -32,5 +32,22 @@ export default defineSchema({
     bio: v.string(),
     interests: v.optional(v.array(v.string())),
     avatar: v.optional(v.id("_storage")),
-  }).index("by_user", ["userId"]).index("by_username", ["username"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_username", ["username"]),
+
+  questions: defineTable({
+    quizSlug: v.string(),
+    questionNumber: v.number(),
+    questionText: v.string(),
+    options: v.any(),
+    correctAnswer: v.string(),
+  }).index("by_quiz", ["quizSlug"]),
+
+  answers: defineTable({
+    userId: v.string(),
+    quizSlug: v.string(),
+    questionNumber: v.number(),
+    isCorrect: v.boolean(),
+  }).index("by_user_quiz_question", ["userId", "quizSlug", "questionNumber"]),
 });

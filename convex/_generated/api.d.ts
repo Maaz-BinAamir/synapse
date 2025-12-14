@@ -9,10 +9,12 @@
  */
 
 import type * as actions from "../actions.js";
+import type * as answers from "../answers.js";
 import type * as auth from "../auth.js";
 import type * as followers from "../followers.js";
 import type * as http from "../http.js";
 import type * as posts from "../posts.js";
+import type * as questions from "../questions.js";
 import type * as users from "../users.js";
 
 import type {
@@ -23,10 +25,12 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   actions: typeof actions;
+  answers: typeof answers;
   auth: typeof auth;
   followers: typeof followers;
   http: typeof http;
   posts: typeof posts;
+  questions: typeof questions;
   users: typeof users;
 }>;
 
