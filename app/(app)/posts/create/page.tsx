@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import {
@@ -35,15 +36,23 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { toast } from "sonner";
 import Image from "next/image";
 
 const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
-  }),
-  body: z.string().min(10, {
-    message: "Body must be at least 10 characters.",
-  }),
+  title: z
+    .string()
+    .min(1, { message: "Title is required." })
+    .max(200, { message: "Title must be at most 200 characters." }),
+  body: z
+    .string()
+    .min(1, { message: "Body is required." })
+    .max(5000, { message: "Body must be at most 5000 characters." }),
+  tags: z
+    .array(z.string())
+    .max(5, { message: "You can add up to 5 tags." })
+    .optional(),
+  images: z.array(z.string()).optional(),
 });
 
 export default function CreatePostPage() {
@@ -118,8 +127,10 @@ export default function CreatePostPage() {
         title: values.title,
         body: values.body,
         tags: tags.length > 0 ? tags : undefined,
-        images: storageIds,
+        images: storageIds as Id<"_storage">[],
       });
+
+      toast.success("Post has been created succesfully");
 
       router.push("/dashboard");
     } catch (error) {
@@ -166,6 +177,8 @@ export default function CreatePostPage() {
                         <Image
                           src={URL.createObjectURL(image)}
                           alt={`Preview ${index + 1}`}
+                          width={96}
+                          height={96}
                           className="w-full h-full object-cover"
                         />
                         <button

@@ -7,7 +7,7 @@ export default function DemoVideo() {
       className="w-full flex flex-col items-center mt-[120px] px-4 md:px-0"
     >
       {/* Section Title */}
-      <h2 className="font-inter font-semibold text-[28px] sm:text-[32px] md:text-[36px] leading-[36px] sm:leading-[40px] md:leading-[44px] text-[#711B9C] mb-8 text-center">
+      <h2 className="font-inter font-semibold text-[28px] sm:text-[32px] md:text-[36px] leading-9 sm:leading-10 md:leading-11 text-[#711B9C] mb-8 text-center">
         Demo Video
       </h2>
 

@@ -73,7 +73,7 @@ export default function SignUpPage() {
           throw Error(res.error.message || "Signup failed");
         }
 
-        router.push("/dashboard");
+        router.push("/onboarding");
       } catch (err) {
         const message = err instanceof Error ? err.message : "Signup failed";
         setServerError(message);
