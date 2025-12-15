@@ -1,10 +1,9 @@
 "use client";
 
 import { useParams, notFound, useRouter } from "next/navigation";
-import { useState, useMemo } from "react"; 
+import { useState, useMemo } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-
 
 const quizzes: Record<
   string,
@@ -12,18 +11,18 @@ const quizzes: Record<
 > = {
   usmle: {
     title: "United States Medical Licensing Examination",
-    primaryColor: "ccfbf1", 
-    secondaryColor: "99f6e4", 
+    primaryColor: "ccfbf1",
+    secondaryColor: "99f6e4",
   },
   fcps: {
     title: "Fellowship of the College of Physicians and Surgeons",
-    primaryColor: "fed7aa", 
-    secondaryColor: "ffedd5", 
+    primaryColor: "fed7aa",
+    secondaryColor: "ffedd5",
   },
   plab: {
     title: "Professional and Linguistic Assessments Board",
-    primaryColor: "dcbdfd", 
-    secondaryColor: "eedfff", 
+    primaryColor: "dcbdfd",
+    secondaryColor: "eedfff",
   },
 };
 
@@ -35,9 +34,8 @@ export default function QuizPage() {
   if (!slug || !quizzes[slug]) notFound();
 
   const quizConfig = quizzes[slug];
-
   const user = useQuery(api.auth.getCurrentUser);
-  console.log("Current user:", user);
+
   const upsertAnswer = useMutation(api.answers.upsertAnswer);
   const quizQuestions = useQuery(api.questions.getQuizQuestions, {
     quizSlug: slug,
@@ -93,7 +91,7 @@ export default function QuizPage() {
 
   return (
     // Outer container to replicate the look of the main content area in the image
-    <div className="flex-1 p-8 bg-gray-50 min-h-screen">
+    <div className="flex-1 p-8 bg-gray-50 min-h-screen min-h-screen w-full bg-gradient-to-br from-[#F7E8FF] via-white to-[#E0F7FA] p-6 md:p-8">
       {/* 2. Main Quiz Card */}
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -113,12 +111,15 @@ export default function QuizPage() {
             </div>
 
             {/* Separator Lines Placeholder */}
-            <div className="flex space-x-2 my-4">
+            {/* Progress Bar */}
+            <div className="w-full bg-gray-200 rounded-full h-2 my-4 overflow-hidden">
               <div
-                className="w-1/4 h-1 rounded-full"
-                style={{ backgroundColor: `#${quizConfig.primaryColor}` }}
+                className="h-2 rounded-full transition-all duration-300"
+                style={{
+                  width: `${((index + 1) / quizQuestions.length) * 100}%`,
+                  backgroundColor: `#${quizConfig.primaryColor}`,
+                }}
               ></div>
-              <div className="w-1/2 h-1 bg-gray-200 rounded-full"></div>
             </div>
           </div>
 
@@ -143,14 +144,16 @@ export default function QuizPage() {
                       {/* 1. Label linked via htmlFor. The dynamic class controls the background. */}
                       <label
                         htmlFor={inputId}
-                        className={`
-                            flex items-start cursor-pointer p-4 rounded-lg transition-colors duration-200 shadow-sm
-                            ${
-                              isSelected
-                                ? "bg-blue-100 border-2 border-blue-500 text-blue-800 font-semibold" // Selected style: Light blue background, blue border
-                                : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50" // Default style
-                            }
-                          `}
+                        className={`flex items-start cursor-pointer p-4 rounded-lg transition-colors duration-200 shadow-sm
+    ${isSelected ? "border-2 font-semibold" : "border border-gray-200 text-gray-700 hover:bg-gray-50"}`}
+                        style={
+                          isSelected
+                            ? {
+                                backgroundColor: `rgba(${parseInt(quizConfig.primaryColor.substring(0, 2), 16)}, ${parseInt(quizConfig.primaryColor.substring(2, 4), 16)}, ${parseInt(quizConfig.primaryColor.substring(4, 6), 16)}, 0.2)`,
+                                borderColor: `#${quizConfig.primaryColor}`,
+                              }
+                            : {}
+                        }
                       >
                         {/* 2. Hidden input with ID and onChange handler */}
                         <input
@@ -178,7 +181,7 @@ export default function QuizPage() {
               <button
                 onClick={handlePrev}
                 disabled={index === 0}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold transition-colors disabled:opacity-50 
+                className="bg-[#9D83C4] hover:bg-[#7a64a8] text-white font-semibold transition-colors disabled:opacity-50 
                           px-10 py-2 rounded-lg border border-gray-300"
               >
                 Previous
