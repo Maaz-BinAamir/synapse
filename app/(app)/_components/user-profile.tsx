@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,12 +17,15 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import PostCard from "./post-card";
+import ProfileForm from "./profile-form";
 
 interface UserProfileProps {
   username?: string;
 }
 
 export default function UserProfile({ username }: UserProfileProps) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
   const currentUserData = useQuery(api.users.getCurrentUserProfile);
   const otherUserData = useQuery(
     api.users.getUserByName,
@@ -41,6 +45,8 @@ export default function UserProfile({ username }: UserProfileProps) {
           ...otherUserData.user,
           avatar: otherUserData.profile?.avatar,
           bio: otherUserData.profile?.bio,
+          interests: otherUserData.profile?.interests,
+          username: otherUserData.profile?.username,
         }
       : null
     : currentUser
@@ -48,6 +54,8 @@ export default function UserProfile({ username }: UserProfileProps) {
           ...currentUser,
           avatar: currentUserData?.profile?.avatar,
           bio: currentUserData?.profile?.bio,
+          interests: currentUserData?.profile?.interests,
+          username: currentUserData?.profile?.username,
         }
       : null;
 
@@ -162,18 +170,41 @@ export default function UserProfile({ username }: UserProfileProps) {
                 <h1 className="text-3xl font-bold text-[#9D83C4] font-serif">
                   {user.name}
                 </h1>
-                {!isOwnProfile && currentUser && (
-                  <Button
-                    onClick={handleFollow}
-                    variant={isFollowing ? "outline" : "default"}
-                    className={
-                      isFollowing
-                        ? "hover:bg-[#9D83C4]/20 hover:text-destructive-foreground border-[#9D83C4]/20 text-[#9D83C4] hover:border-[#9D83C4]/20"
-                        : "bg-[#9D83C4] hover:bg-[#8B72B0] text-white shadow-md hover:shadow-lg transition-all"
-                    }
+                {isOwnProfile ? (
+                  <Dialog
+                    open={isEditDialogOpen}
+                    onOpenChange={setIsEditDialogOpen}
                   >
-                    {isFollowing ? "Unfollow" : "Follow"}
-                  </Button>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="border-[#9D83C4] text-[#9D83C4] hover:bg-[#9D83C4]/10"
+                      >
+                        Edit Profile
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                      <DialogTitle className="hidden">Edit Profile</DialogTitle>
+                      <ProfileForm
+                        user={user}
+                        onClose={() => setIsEditDialogOpen(false)}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  currentUser && (
+                    <Button
+                      onClick={handleFollow}
+                      variant={isFollowing ? "outline" : "default"}
+                      className={
+                        isFollowing
+                          ? "hover:bg-[#9D83C4]/20 hover:text-destructive-foreground border-[#9D83C4]/20 text-[#9D83C4] hover:border-[#9D83C4]/20"
+                          : "bg-[#9D83C4] hover:bg-[#8B72B0] text-white shadow-md hover:shadow-lg transition-all"
+                      }
+                    >
+                      {isFollowing ? "Unfollow" : "Follow"}
+                    </Button>
+                  )
                 )}
               </div>
 
