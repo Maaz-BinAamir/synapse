@@ -50,4 +50,16 @@ export default defineSchema({
     questionNumber: v.number(),
     isCorrect: v.boolean(),
   }).index("by_user_quiz_question", ["userId", "quizSlug", "questionNumber"]),
+  diagnosisSessions: defineTable({
+    userId: v.string(),
+    disease: v.string(),
+    userAnswer: v.optional(v.string()),
+  }).index("by_user", ["userId"]),
+
+  // for now we won't store messages, since old sessions can't be viewed
+  // diagnosisMessages: defineTable({
+  //   sessionId: v.id("diagnosisSessions"),
+  //   role: v.union(v.literal("user"), v.literal("assistant")),
+  //   content: v.string(),
+  // }).index("by_session", ["sessionId"]),
 });

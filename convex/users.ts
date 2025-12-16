@@ -108,6 +108,7 @@ export const updateProfile = mutation({
     bio: v.string(),
     interests: v.array(v.string()),
     avatar: v.optional(v.id("_storage")),
+    hasRemovedAvatar: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -121,11 +122,19 @@ export const updateProfile = mutation({
       .first();
 
     if (existingProfile) {
+      if (existingProfile.avatar && (args.avatar || args.hasRemovedAvatar)) {
+        await ctx.storage.delete(existingProfile.avatar);
+      }
+
       await ctx.db.patch(existingProfile._id, {
         username: args.username,
         bio: args.bio,
         interests: args.interests,
-        avatar: args.avatar,
+        avatar:
+          args.avatar ||
+          (existingProfile.avatar && args.hasRemovedAvatar
+            ? undefined
+            : existingProfile.avatar),
       });
     } else {
       await ctx.db.insert("profile", {

@@ -15,7 +15,10 @@ import {
   X,
   Type,
   FileText,
+  Check,
+  ChevronsUpDown,
 } from "lucide-react";
+import { INTERESTS_LIST } from "@/lib/constants";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +32,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Card,
   CardContent,
@@ -63,6 +79,7 @@ export default function CreatePostPage() {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
+  const [openTagCombo, setOpenTagCombo] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -84,23 +101,25 @@ export default function CreatePostPage() {
     setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const addTag = () => {
-    const trimmedTag = tagInput.trim();
-    if (trimmedTag && !tags.includes(trimmedTag)) {
-      setTags((prev) => [...prev, trimmedTag]);
+  const addTag = (tag: string) => {
+    if (tag && !tags.includes(tag) && tags.length < 5) {
+      setTags((prev) => [...prev, tag]);
       setTagInput("");
+      setOpenTagCombo(false);
+    }
+  };
+
+  const addCustomTag = () => {
+    const trimmed = tagInput.trim();
+    if (trimmed && !tags.includes(trimmed) && tags.length < 5) {
+      setTags((prev) => [...prev, trimmed]);
+      setTagInput("");
+      setOpenTagCombo(false);
     }
   };
 
   const removeTag = (tagToRemove: string) => {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
-  };
-
-  const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addTag();
-    }
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -256,22 +275,63 @@ export default function CreatePostPage() {
                   <label className="text-gray-700 font-medium flex items-center gap-2">
                     <Plus className="w-4 h-4 text-[#FED7AA]" /> Tags
                   </label>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Enter a tag..."
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      onKeyDown={handleTagInputKeyDown}
-                      className="border-gray-200 focus-visible:border-[#9D83C4] focus-visible:ring-[#9D83C4]/20 transition-all duration-300 bg-white/50"
-                    />
-                    <Button
-                      type="button"
-                      onClick={addTag}
-                      className="bg-[#9D83C4] hover:bg-[#8a72b0] text-white"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  <Popover open={openTagCombo} onOpenChange={setOpenTagCombo}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openTagCombo}
+                        disabled={tags.length >= 5}
+                        className="w-full justify-between border-gray-200 focus-visible:border-[#9D83C4] focus-visible:ring-[#9D83C4]/20 transition-all duration-300 bg-white/50"
+                      >
+                        {tags.length >= 5
+                          ? "Maximum tags reached (5/5)"
+                          : "Select or add tags..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search or type to add..."
+                          value={tagInput}
+                          onValueChange={setTagInput}
+                        />
+                        <CommandList>
+                          <CommandEmpty>
+                            <div className="p-2">
+                              <p className="text-sm text-gray-500 mb-2">
+                                No results found.
+                              </p>
+                              {tagInput.trim() && tags.length < 5 && (
+                                <Button
+                                  size="sm"
+                                  onClick={addCustomTag}
+                                  className="w-full bg-[#9D83C4] hover:bg-[#8a72b0]"
+                                >
+                                  Add &quot;{tagInput.trim()}&quot;
+                                </Button>
+                              )}
+                            </div>
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {INTERESTS_LIST.filter(
+                              (interest) => !tags.includes(interest)
+                            ).map((interest) => (
+                              <CommandItem
+                                key={interest}
+                                value={interest}
+                                onSelect={() => addTag(interest)}
+                              >
+                                <Check className="mr-2 h-4 w-4 opacity-0" />
+                                {interest}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   {tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-2">
                       {tags.map((tag, index) => (
@@ -293,7 +353,8 @@ export default function CreatePostPage() {
                     </div>
                   )}
                   <p className="text-xs text-gray-400">
-                    Press Enter or click + to add a tag
+                    {tags.length}/5 tags selected. Choose from list or add
+                    custom tags.
                   </p>
                 </div>
 

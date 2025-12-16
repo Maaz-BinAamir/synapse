@@ -11,6 +11,7 @@
 import type * as actions from "../actions.js";
 import type * as answers from "../answers.js";
 import type * as auth from "../auth.js";
+import type * as diagnosisSession from "../diagnosisSession.js";
 import type * as followers from "../followers.js";
 import type * as http from "../http.js";
 import type * as posts from "../posts.js";
@@ -27,6 +28,7 @@ declare const fullApi: ApiFromModules<{
   actions: typeof actions;
   answers: typeof answers;
   auth: typeof auth;
+  diagnosisSession: typeof diagnosisSession;
   followers: typeof followers;
   http: typeof http;
   posts: typeof posts;
