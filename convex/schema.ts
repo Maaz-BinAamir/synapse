@@ -18,6 +18,23 @@ export default defineSchema({
       searchField: "title",
     }),
 
+  likes: defineTable({
+    postId: v.id("posts"),
+    userId: v.string(),
+  }).index("by_post_user", ["postId", "userId"]),
+
+  views: defineTable({
+    postId: v.id("posts"),
+    userId: v.string(),
+  }).index("by_post_user", ["postId", "userId"]),
+
+  comments: defineTable({
+    postId: v.id("posts"),
+    parentId: v.optional(v.id("comments")),
+    authorId: v.string(),
+    content: v.string(),
+  }).index("by_post", ["postId"]),
+
   followers: defineTable({
     followerId: v.string(),
     followingId: v.string(),

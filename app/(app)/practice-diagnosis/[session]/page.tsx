@@ -39,8 +39,9 @@ export default function PracticeSession() {
   const [input, setInput] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [diagnosis, setDiagnosis] = useState("");
+  const [correctAnswer, setCorrectAnswer] = useState("");
   const [showResult, setShowResult] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false); // remove this additional state in the future
 
   const router = useRouter();
   const { session } = useParams();
@@ -67,12 +68,16 @@ export default function PracticeSession() {
   const handleSubmitDiagnosis = async () => {
     if (!diagnosis.trim()) return;
 
-    const { isCorrect } = await submitAnswer({
+    const { correctAnswer } = await submitAnswer({
       sessionId: session as Id<"diagnosisSessions">,
       answer: diagnosis.trim(),
     });
 
-    setIsCorrect(isCorrect);
+    const isAnswerCorrect =
+      diagnosis.trim().toLowerCase() === correctAnswer.toLowerCase();
+
+    setIsCorrect(isAnswerCorrect);
+    setCorrectAnswer(correctAnswer);
     setShowResult(true);
 
     // Redirect after 3 seconds
@@ -272,7 +277,7 @@ export default function PracticeSession() {
                       Incorrect Diagnosis
                     </h2>
                     <p className="text-gray-600">
-                      Review the symptoms and try again next time.
+                      The correct diagnosis was {correctAnswer}
                     </p>
                   </>
                 )}

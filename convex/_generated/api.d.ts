@@ -11,13 +11,16 @@
 import type * as actions from "../actions.js";
 import type * as answers from "../answers.js";
 import type * as auth from "../auth.js";
+import type * as comments from "../comments.js";
 import type * as diagnosisSession from "../diagnosisSession.js";
 import type * as followers from "../followers.js";
 import type * as http from "../http.js";
+import type * as likes from "../likes.js";
 import type * as posts from "../posts.js";
 import type * as questions from "../questions.js";
 import type * as quiz from "../quiz.js";
 import type * as users from "../users.js";
+import type * as views from "../views.js";
 
 import type {
   ApiFromModules,
@@ -29,13 +32,16 @@ declare const fullApi: ApiFromModules<{
   actions: typeof actions;
   answers: typeof answers;
   auth: typeof auth;
+  comments: typeof comments;
   diagnosisSession: typeof diagnosisSession;
   followers: typeof followers;
   http: typeof http;
+  likes: typeof likes;
   posts: typeof posts;
   questions: typeof questions;
   quiz: typeof quiz;
   users: typeof users;
+  views: typeof views;
 }>;
 
 /**

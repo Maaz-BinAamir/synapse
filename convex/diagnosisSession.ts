@@ -34,8 +34,7 @@ export const submitAnswer = mutation({
     await ctx.db.patch(args.sessionId, { userAnswer: args.answer });
 
     return {
-      isCorrect:
-        session.disease.toLowerCase() === args.answer.toLowerCase().trim(),
+      correctAnswer: session.disease,
     };
   },
 });

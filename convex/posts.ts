@@ -1,6 +1,43 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
+export const getPostById = query({
+  args: { postId: v.id("posts") },
+  handler: async (ctx, args) => {
+    const post = await ctx.db.get(args.postId);
+
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    const profile = await ctx.db
+      .query("profile")
+      .withIndex("by_user", (q) => q.eq("userId", post.authorId))
+      .first();
+
+    const avatar = profile?.avatar
+      ? await ctx.storage.getUrl(profile.avatar)
+      : null;
+
+    const postPictures = post.images
+      ? await Promise.all(
+          post.images.map(async (imageId) => {
+            return await ctx.storage.getUrl(imageId);
+          })
+        )
+      : null;
+
+    return {
+      ...post,
+      images: postPictures,
+      author: {
+        ...profile,
+        avatar,
+      },
+    };
+  },
+});
+
 export const get = query({
   args: {},
   handler: async (ctx) => {
@@ -11,8 +48,6 @@ export const get = query({
     return await ctx.db.query("posts").order("desc").collect();
   },
 });
-
-
 
 export const getPostsByAuthor = query({
   args: { authorId: v.string() },

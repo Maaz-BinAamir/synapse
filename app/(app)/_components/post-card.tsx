@@ -13,7 +13,7 @@ export default function PostCard({ post }: { post: Doc<"posts"> }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Link href={`/posts/${post._id}`}>
+      <Link href={`/post/${post._id}`}>
         <Card className="group hover:shadow-md transition-all duration-300 border-[#9D83C4]/10 bg-white/80 backdrop-blur-sm hover:border-[#9D83C4]/30 cursor-pointer overflow-hidden">
           <CardContent className="p-6">
             <div className="flex justify-between items-start mb-3">
