@@ -12,6 +12,7 @@ import type * as actions from "../actions.js";
 import type * as answers from "../answers.js";
 import type * as auth from "../auth.js";
 import type * as comments from "../comments.js";
+import type * as dashboard from "../dashboard.js";
 import type * as diagnosisSession from "../diagnosisSession.js";
 import type * as followers from "../followers.js";
 import type * as http from "../http.js";
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   answers: typeof answers;
   auth: typeof auth;
   comments: typeof comments;
+  dashboard: typeof dashboard;
   diagnosisSession: typeof diagnosisSession;
   followers: typeof followers;
   http: typeof http;

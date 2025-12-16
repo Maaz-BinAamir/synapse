@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -25,7 +25,7 @@ const sidebarItems = [
     href: "/practice-questions",
     icon: FileQuestion,
   },
-  { name: "Make Posts", href: "/posts/create", icon: PenSquare },
+  { name: "Make Posts", href: "/post/create", icon: PenSquare },
   {
     name: "Practice Diagnosis",
     href: "/practice-diagnosis",
@@ -34,9 +34,36 @@ const sidebarItems = [
   { name: "Learning Resources", href: "/learning-resources", icon: BookOpen },
 ];
 
+// Helper functions for useSyncExternalStore
+const STORAGE_KEY = "sidebarCollapsed";
+
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function getSnapshot() {
+  const value = localStorage.getItem(STORAGE_KEY);
+  return value === "true";
+}
+
+function getServerSnapshot() {
+  return true; // Default to collapsed on server
+}
+
 export function Sidebar() {
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const isCollapsed = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot
+  );
+
+  const toggleCollapsed = () => {
+    const newValue = !isCollapsed;
+    localStorage.setItem(STORAGE_KEY, String(newValue));
+    window.dispatchEvent(new StorageEvent("storage"));
+  };
 
   return (
     <div
@@ -53,7 +80,7 @@ export function Sidebar() {
         )}
       >
         <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={toggleCollapsed}
           className="text-white hover:bg-white/10 rounded-md p-1"
         >
           <Menu className="h-8 w-8" />

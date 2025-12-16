@@ -12,8 +12,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, User, Reply } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
-import { Doc } from "@/convex/_generated/dataModel";
-
 interface CommentProps {
   comment: any; // Type this properly
   replies: any[];

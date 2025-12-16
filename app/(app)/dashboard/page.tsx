@@ -3,11 +3,49 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Image from "next/image";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
+import { format } from "date-fns";
+import Link from "next/link";
+import { Skeleton } from "@/components/ui/skeleton";
+import { FileText, ArrowRight, Activity, Brain } from "lucide-react";
 
 export default function DashboardPage() {
-  const user = useQuery(api.auth.getCurrentUser);
+  const quizStats = useQuery(api.dashboard.getQuizStats);
+  const diagnosisStats = useQuery(api.dashboard.getDiagnosisStats);
+  const recentPosts = useQuery(api.dashboard.getRecentViewedPosts);
 
-  console.log("Current user:", user);
+  const quizData = quizStats?.map((q) => ({
+    date: format(new Date(q.date), "MMM dd"),
+    score: q.score,
+  }));
+
+  const diagnosisData = diagnosisStats
+    ? [
+        {
+          name: "Correct",
+          value: diagnosisStats.filter((s) => s.isCorrect).length,
+        },
+        {
+          name: "Incorrect",
+          value: diagnosisStats.filter((s) => !s.isCorrect).length,
+        },
+      ]
+    : [];
+
+  const COLORS = ["#4ade80", "#f87171"];
 
   return (
     <div className="min-h-full w-full bg-linear-to-br from-[#F7E8FF] via-white to-[#E0F7FA] p-6 md:p-8">
@@ -19,9 +57,6 @@ export default function DashboardPage() {
             <h1 className="text-3xl font-bold text-[#9D83C4] font-serif">
               Dashboard
             </h1>
-            <p className="text-gray-500 mt-1">
-              Welcome {user ? user.name : "Guest"}! Here is your dashboard.
-            </p>
           </div>
 
           {/* Divider BELOW text */}
@@ -46,6 +81,152 @@ export default function DashboardPage() {
                 <div className="absolute right-0 top-0 w-8 h-1 bg-blue-200" />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Section 1: Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Quiz Stats */}
+          <Card className="border-none shadow-md bg-white/80 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-gray-800">
+                <Brain className="h-5 w-5 text-[#9D83C4]" />
+                Quiz Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px] w-full">
+                {quizStats === undefined ? (
+                  <Skeleton className="h-full w-full" />
+                ) : quizStats.length === 0 ? (
+                  <div className="h-full flex items-center justify-center text-gray-400">
+                    No quiz data available
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={quizData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
+                      <XAxis
+                        dataKey="date"
+                        stroke="#888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        stroke="#888"
+                        fontSize={12}
+                        tickLine={false}
+                        axisLine={false}
+                        domain={[0, 10]}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(255, 255, 255, 0.9)",
+                          borderRadius: "8px",
+                          border: "none",
+                          boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                        }}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="score"
+                        stroke="#9D83C4"
+                        strokeWidth={3}
+                        dot={{ fill: "#9D83C4", strokeWidth: 2 }}
+                        activeDot={{ r: 6 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Diagnosis Stats */}
+          <Card className="border-none shadow-md bg-white/80 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-gray-800">
+                <Activity className="h-5 w-5 text-[#9D83C4]" />
+                Diagnosis Accuracy (Last 10)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px] w-full">
+                {diagnosisStats === undefined ? (
+                  <Skeleton className="h-full w-full" />
+                ) : diagnosisStats.length === 0 ? (
+                  <div className="h-full flex items-center justify-center text-gray-400">
+                    No diagnosis data available
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={diagnosisData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {diagnosisData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend verticalAlign="bottom" height={36} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Section 2: Recent Posts */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold text-gray-800 font-serif">
+            Recently Viewed Posts
+          </h2>
+          <div className="grid grid-cols-1 gap-4">
+            {recentPosts === undefined ? (
+              [1, 2, 3].map((i) => (
+                <Skeleton key={i} className="h-24 w-full rounded-xl" />
+              ))
+            ) : recentPosts.length === 0 ? (
+              <div className="text-gray-500 italic">
+                You haven&apos;t viewed any posts yet.
+              </div>
+            ) : (
+              recentPosts.map((post) => (
+                <Link key={post._id} href={`/post/${post._id}`}>
+                  <Card className="hover:shadow-lg transition-all duration-300 border-none bg-white/60 hover:bg-white/80 group">
+                    <CardContent className="p-4 flex items-center justify-between">
+                      <div className="flex items-start gap-4">
+                        <div className="p-3 rounded-full bg-[#9D83C4]/10 text-[#9D83C4] group-hover:bg-[#9D83C4] group-hover:text-white transition-colors">
+                          <FileText className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-lg text-gray-800 group-hover:text-[#9D83C4] transition-colors">
+                            {post.title}
+                          </h3>
+                          <p className="text-sm text-gray-500 mt-1">
+                            by {post.authorName} • Viewed{" "}
+                            {format(new Date(post.viewedAt), "MMM dd, yyyy")}
+                          </p>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-5 w-5 text-gray-300 group-hover:text-[#9D83C4] transition-colors" />
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))
+            )}
           </div>
         </div>
       </div>
