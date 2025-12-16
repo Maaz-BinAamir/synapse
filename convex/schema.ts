@@ -32,5 +32,20 @@ export default defineSchema({
     bio: v.string(),
     interests: v.optional(v.array(v.string())),
     avatar: v.optional(v.id("_storage")),
-  }).index("by_user", ["userId"]).index("by_username", ["username"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_username", ["username"]),
+
+  diagnosisSessions: defineTable({
+    userId: v.string(),
+    disease: v.string(),
+    userAnswer: v.optional(v.string()),
+  }).index("by_user", ["userId"]),
+
+  // for now we won't store messages, since old sessions can't be viewed
+  // diagnosisMessages: defineTable({
+  //   sessionId: v.id("diagnosisSessions"),
+  //   role: v.union(v.literal("user"), v.literal("assistant")),
+  //   content: v.string(),
+  // }).index("by_session", ["sessionId"]),
 });

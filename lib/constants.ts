@@ -25,3 +25,22 @@ export const INTERESTS_LIST = [
   "Immunology",
   "Anatomy",
 ];
+
+export const DISEASES = [
+  "Sorethroat/Respiratory tract infections",
+  "Musculoskeletal pain",
+  "Malaria",
+  "Dengue",
+  "Hypertension",
+  "Diarrhoea",
+  "Diabetes",
+  "Kidney stones",
+  "Cholecystitis",
+  "Appendicitis",
+  "Gestational hemorrhage",
+  "Hemorrhagic stroke",
+  "Ischemic stroke",
+  "Myocardial Infarction",
+];
+
+export const MAX_QUESTIONS = 5;

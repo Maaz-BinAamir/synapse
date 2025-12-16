@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Accordion,
   AccordionContent,
@@ -29,7 +27,7 @@ export default function LearningResourcesPage() {
             <div className="w-full max-w-4xl">
               <div className="relative mt-2 w-full">
                 {/* Line */}
-                <div className="h-[2px] w-full bg-gray-200 rounded-full" />
+                <div className="h-0.5 w-full bg-gray-200 rounded-full" />
 
                 {/* Stethoscope */}
                 <Image
@@ -57,7 +55,7 @@ export default function LearningResourcesPage() {
           >
             {/* USMLE */}
             <AccordionItem value="item-1">
-              <AccordionTrigger className="flex items-center justify-center font-semibold text-lg text-[#548584] bg-gradient-to-r from-[#ccfbeb4a] to-[#b4dafe3c] rounded-lg shadow-md py-7 px-6  data-[state=open]:text-[#2F5B5A] data-[state=open]:shadow-inner">
+              <AccordionTrigger className="flex items-center justify-center font-semibold text-lg text-[#548584] bg-linear-to-r from-[#ccfbeb4a] to-[#b4dafe3c] rounded-lg shadow-md py-7 px-6  data-[state=open]:text-[#2F5B5A] data-[state=open]:shadow-inner">
                 <div className="flex items-center gap-4">
                   United States Medical Licensing Examination
                   <Image
@@ -65,7 +63,7 @@ export default function LearningResourcesPage() {
                     alt="Card 1"
                     width={160}
                     height={160}
-                    className="object-contain max-w-[80px] sm:max-w-[120px] w-full h-auto"
+                    className="object-contain max-w-20 sm:max-w-[120px] w-full h-auto"
                   />
                 </div>
               </AccordionTrigger>
@@ -128,7 +126,7 @@ export default function LearningResourcesPage() {
 
             {/* FCPS */}
             <AccordionItem value="item-2">
-              <AccordionTrigger className="flex items-center justify-center font-semibold text-lg text-[#9C7241] bg-gradient-to-r from-[#FEF4EB] to-[#FFF9F6] rounded-lg shadow-md py-7 px-6 data-[state=open]:text-[#5b3f1f] data-[state=open]:shadow-inner">
+              <AccordionTrigger className="flex items-center justify-center font-semibold text-lg text-[#9C7241] bg-linear-to-r from-[#FEF4EB] to-[#FFF9F6] rounded-lg shadow-md py-7 px-6 data-[state=open]:text-[#5b3f1f] data-[state=open]:shadow-inner">
                 <div className="flex items-center gap-4">
                   Fellowship of the College of Physicians and Surgeons
                   <Image
@@ -136,7 +134,7 @@ export default function LearningResourcesPage() {
                     alt="Card 2"
                     width={60}
                     height={60}
-                    className="object-contain max-w-[80px] sm:max-w-[60px] w-full h-auto"
+                    className="object-contain max-w-20 sm:max-w-[60px] w-full h-auto"
                   />
                 </div>
               </AccordionTrigger>
@@ -199,7 +197,7 @@ export default function LearningResourcesPage() {
 
             {/* PLAB */}
             <AccordionItem value="item-3">
-              <AccordionTrigger className="flex items-center justify-center font-semibold text-lg text-[#711B9C] bg-gradient-to-r from-[#f1e5ff58] to-[#f7efff7d] rounded-lg shadow-md py-7 px-6 data-[state=open]:text-[#3e0f56] data-[state=open]:shadow-inner">
+              <AccordionTrigger className="flex items-center justify-center font-semibold text-lg text-[#711B9C] bg-linear-to-r from-[#f1e5ff58] to-[#f7efff7d] rounded-lg shadow-md py-7 px-6 data-[state=open]:text-[#3e0f56] data-[state=open]:shadow-inner">
                 <div className="flex items-center gap-4">
                   Professional and Linguistic Assessments Board
                   <Image
