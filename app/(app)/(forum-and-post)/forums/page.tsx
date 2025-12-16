@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -9,7 +10,7 @@ import { Search, Filter } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import PostCard from "../../_components/post-card";
 
-export default function ForumsPage() {
+function ForumsContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search")?.toString() || "";
 
@@ -91,6 +92,42 @@ export default function ForumsPage() {
           ) : (
             postsDisplay?.map((post) => <PostCard key={post._id} post={post} />)
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ForumsPage() {
+  return (
+    <Suspense fallback={<ForumsContentSkeleton />}>
+      <ForumsContent />
+    </Suspense>
+  );
+}
+
+function ForumsContentSkeleton() {
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+          <Skeleton className="h-10 w-64 mb-2" />
+          <Skeleton className="h-5 w-48" />
+        </div>
+      </div>
+      <div className="space-y-6">
+        <Skeleton className="h-8 w-48" />
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="border-none shadow-sm bg-white/60">
+              <CardContent className="p-6">
+                <Skeleton className="h-6 w-3/4 mb-4" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-1/2" />
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </div>

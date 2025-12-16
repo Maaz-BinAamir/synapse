@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent } from "react";
+import { FormEvent, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -104,10 +104,9 @@ function LatestSection() {
   );
 }
 
-export function ForumSidebar() {
+function SearchBar() {
   const searchParams = useSearchParams();
   const router = useRouter();
-
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -123,20 +122,28 @@ export function ForumSidebar() {
   };
 
   return (
+    <form onSubmit={handleSearch} className="relative w-full">
+      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <Search className="h-5 w-5 text-gray-400" />
+      </div>
+      <Input
+        name="search"
+        type="text"
+        placeholder="Search discussions..."
+        className="pl-10 py-6 bg-white/80 border-[#9D83C4]/20 focus-visible:ring-[#9D83C4]/30 rounded-xl shadow-sm"
+        defaultValue={searchParams.get("search")?.toString()}
+      />
+    </form>
+  );
+}
+
+export function ForumSidebar() {
+  return (
     <div className="space-y-8 flex flex-col">
       {/* Search Bar */}
-      <form onSubmit={handleSearch} className="relative w-full">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search className="h-5 w-5 text-gray-400" />
-        </div>
-        <Input
-          name="search"
-          type="text"
-          placeholder="Search discussions..."
-          className="pl-10 py-6 bg-white/80 border-[#9D83C4]/20 focus-visible:ring-[#9D83C4]/30 rounded-xl shadow-sm"
-          defaultValue={searchParams.get("search")?.toString()}
-        />
-      </form>
+      <Suspense>
+        <SearchBar />
+      </Suspense>
 
       {/* Create Post Button */}
       <Link href="/post/create" className="block">

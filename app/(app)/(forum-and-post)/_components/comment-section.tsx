@@ -7,9 +7,12 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, User, Reply } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+
+import { Doc } from "@/convex/_generated/dataModel";
 
 interface CommentProps {
   comment: any; // Type this properly
@@ -84,7 +87,7 @@ function Comment({ comment, replies, postId, level = 0 }: CommentProps) {
                 onChange={(e) => setReplyContent(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Write a reply..."
-                className="min-h-[80px] bg-white/50 border-[#9D83C4]/20 focus-visible:ring-[#9D83C4]/30"
+                className="min-h-20 bg-white/50 border-[#9D83C4]/20 focus-visible:ring-[#9D83C4]/30"
               />
               <div className="flex gap-2 justify-end">
                 <Button
@@ -127,7 +130,35 @@ export function CommentSection({ postId }: { postId: Id<"posts"> }) {
   const [newComment, setNewComment] = useState("");
   const createComment = useMutation(api.comments.createComment);
 
-  if (!comments) return <div>Loading comments...</div>;
+  if (!comments)
+    return (
+      <div>
+        {/* Comment Section Skeleton */}
+        <Card className="border-none shadow-sm bg-white/80">
+          <CardHeader className="border-b border-gray-100 pb-4">
+            <Skeleton className="h-6 w-32" />
+          </CardHeader>
+          <CardContent className="pt-6 space-y-8">
+            <Skeleton className="h-[100px] w-full rounded-md" />
+            <div className="space-y-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex gap-3">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
 
   // Build tree
   const commentMap = new Map();

@@ -20,6 +20,7 @@ import {
   User,
 } from "lucide-react";
 import { CommentSection } from "../../_components/comment-section";
+import Image from "next/image";
 
 export default function PostPage() {
   const params = useParams();
@@ -67,18 +68,39 @@ export default function PostPage() {
   if (post === undefined) {
     return (
       <div className="space-y-6">
-        <Card className="border-none shadow-sm bg-white/80">
-          <CardHeader>
-            <Skeleton className="h-8 w-3/4 mb-2" />
-            <div className="flex gap-2">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-24" />
+        <Card className="border-none shadow-sm bg-white/80 overflow-hidden">
+          <CardHeader className="border-b border-gray-100 pb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-10 w-10 rounded-full" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-24" />
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Skeleton className="h-5 w-16 rounded-full" />
+                <Skeleton className="h-5 w-16 rounded-full" />
+              </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-2/3" />
+          <CardContent className="pt-6 space-y-6">
+            <div>
+              <Skeleton className="h-8 w-3/4 mb-4" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            </div>
+
+            <Skeleton className="w-full aspect-video rounded-xl" />
+
+            <div className="flex items-center gap-6 pt-4 border-t border-gray-100">
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-5 w-16" />
+              <Skeleton className="h-5 w-24 ml-auto" />
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -155,11 +177,12 @@ export default function PostPage() {
           {post.images && post.images.length > 0 && (
             <div className="relative rounded-xl overflow-hidden bg-gray-100 border border-gray-200">
               <div className="aspect-video relative flex items-center justify-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={post.images[currentImageIndex]!}
                   alt={`Post attachment ${currentImageIndex + 1}`}
                   className="max-h-full max-w-full object-contain"
+                  width={800}
+                  height={450}
                 />
               </div>
 
