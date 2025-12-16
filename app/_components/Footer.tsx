@@ -6,7 +6,7 @@ export default function Footer() {
       <div
         className="mx-auto max-w-[1200px] h-[346px] 
                bg-[#9D83C4] bg-opacity-60 
-               rounded-t-[32px] 
+               rounded-t-4xl 
                flex flex-col items-center justify-center px-10"
       >
         {/* Footer content text */}

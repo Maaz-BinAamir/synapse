@@ -2,8 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, ArrowRight } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const quizzes = [
   {
@@ -30,8 +33,11 @@ const quizzes = [
 ];
 
 export default function PracticeQuestionsPage() {
+  const router = useRouter();
+  const createQuiz = useMutation(api.quiz.createQuiz);
+
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#F7E8FF] via-white to-[#E0F7FA] p-6 md:p-8">
+    <div className="min-h-screen w-full bg-linear-to-br from-[#F7E8FF] via-white to-[#E0F7FA] p-6 md:p-8">
       <div className="max-w-7xl mx-auto space-y-10">
         {/* Header Section */}
         <div className="space-y-4">
@@ -50,7 +56,7 @@ export default function PracticeQuestionsPage() {
             <div className="w-full max-w-4xl">
               <div className="relative mt-2 w-full">
                 {/* Line */}
-                <div className="h-[2px] w-full bg-gray-200 rounded-full" />
+                <div className="h-0.5 w-full bg-gray-200 rounded-full" />
 
                 {/* Stethoscope */}
                 <Image
@@ -78,7 +84,7 @@ export default function PracticeQuestionsPage() {
               className="w-full md:w-[85%] lg:w-[70%] bg-white/80 rounded-xl shadow-sm overflow-hidden pt-0"
             >
               <CardHeader
-                className={`pt-6 border-b border-transparent bg-gradient-to-r ${quiz.gradientClass}`}
+                className={`pt-6 border-b border-transparent bg-linear-to-r ${quiz.gradientClass}`}
               >
                 <CardTitle
                   className={`text-lg font-semibold flex items-center justify-center gap-2 ${quiz.textColorClass}`}
@@ -95,12 +101,19 @@ export default function PracticeQuestionsPage() {
               <CardContent
                 className={`p-2 flex justify-center ${quiz.textColorClass}`}
               >
-                <Link
-                  href={`/practice-questions/${quiz.slug}`}
-                  className="underline ml-2 inline-flex items-center gap-1"
+                <button
+                  className="ml-2 inline-flex items-center gap-1 hover:underline"
+                  onClick={async () => {
+                    const type = quiz.slug.toUpperCase() as
+                      | "PLAB"
+                      | "FCPS"
+                      | "USMLE";
+                    const quizId = await createQuiz({ test: type });
+                    router.push(`/practice-questions/${quizId}`);
+                  }}
                 >
-                  Start Quiz <ArrowRight className="w-4 h-4" />
-                </Link>
+                  Attempt a Quiz <ArrowRight className="w-4 h-4" />
+                </button>
               </CardContent>
             </Card>
           ))}

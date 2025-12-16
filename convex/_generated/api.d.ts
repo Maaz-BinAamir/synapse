@@ -16,6 +16,7 @@ import type * as followers from "../followers.js";
 import type * as http from "../http.js";
 import type * as posts from "../posts.js";
 import type * as questions from "../questions.js";
+import type * as quiz from "../quiz.js";
 import type * as users from "../users.js";
 
 import type {
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   posts: typeof posts;
   questions: typeof questions;
+  quiz: typeof quiz;
   users: typeof users;
 }>;
 

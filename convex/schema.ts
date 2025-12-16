@@ -37,19 +37,34 @@ export default defineSchema({
     .index("by_username", ["username"]),
 
   questions: defineTable({
-    quizSlug: v.string(),
-    questionNumber: v.number(),
-    questionText: v.string(),
-    options: v.any(),
-    correctAnswer: v.string(),
-  }).index("by_quiz", ["quizSlug"]),
+    text: v.string(),
+    options: v.array(v.string()),
+    test: v.union(v.literal("PLAB"), v.literal("FCPS"), v.literal("USMLE")),
+    correctOption: v.union(
+      v.literal(0),
+      v.literal(1),
+      v.literal(2),
+      v.literal(3)
+    ),
+  }).index("by_test", ["test"]),
 
-  answers: defineTable({
+  quizzes: defineTable({
     userId: v.string(),
-    quizSlug: v.string(),
-    questionNumber: v.number(),
-    isCorrect: v.boolean(),
-  }).index("by_user_quiz_question", ["userId", "quizSlug", "questionNumber"]),
+    test: v.union(v.literal("PLAB"), v.literal("FCPS"), v.literal("USMLE")),
+    completedAt: v.optional(v.number()),
+    score: v.optional(v.number()),
+  })
+    .index("by_user_quiz", ["userId", "test"])
+    .index("by_test", ["test"]),
+
+  quizQuestions: defineTable({
+    quizId: v.id("quizzes"),
+    questionId: v.id("questions"),
+    selectedOption: v.optional(v.number()),
+  })
+    .index("by_quiz", ["quizId"])
+    .index("by_quiz_question", ["quizId", "questionId"]),
+
   diagnosisSessions: defineTable({
     userId: v.string(),
     disease: v.string(),

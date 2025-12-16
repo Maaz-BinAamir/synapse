@@ -1,45 +1,28 @@
-import { mutation, query } from "./_generated/server";
+import { mutation } from "./_generated/server";
 import { v } from "convex/values";
 
-export const upsertAnswer = mutation({
+export const submitAnswer = mutation({
   args: {
-    userId: v.string(),
-    quizSlug: v.string(),
-    questionNumber: v.number(),
-    isCorrect: v.boolean(),
+    quizId: v.id("quizzes"),
+    questionId: v.id("questions"),
+    selectedOption: v.optional(
+      v.union(v.literal(0), v.literal(1), v.literal(2), v.literal(3))
+    ),
   },
-  async handler(ctx, args) {
-    const existing = await ctx.db
-      .query("answers")
-      .withIndex("by_user_quiz_question", (q) =>
-        q
-          .eq("userId", args.userId)
-          .eq("quizSlug", args.quizSlug)
-          .eq("questionNumber", args.questionNumber)
+  handler: async (ctx, args) => {
+    // Find the existing answer record for this quiz and question
+    const existingAnswer = await ctx.db
+      .query("quizQuestions")
+      .withIndex("by_quiz_question", (q) =>
+        q.eq("quizId", args.quizId).eq("questionId", args.questionId)
       )
-      .first();
+      .unique();
 
-    if (existing) {
-      await ctx.db.patch(existing._id, { isCorrect: args.isCorrect });
-    } else {
-      await ctx.db.insert("answers", args);
+    if (existingAnswer) {
+      await ctx.db.patch(existingAnswer._id, {
+        selectedOption: args.selectedOption,
+      });
+      return existingAnswer._id;
     }
-
-    return null;
-  },
-});
-
-export const getQuizResults = query({
-  args: {
-    userId: v.string(),
-    quizSlug: v.string(),
-  },
-  async handler(ctx, { userId, quizSlug }) {
-    return await ctx.db
-      .query("answers")
-      .withIndex("by_user_quiz_question", (q) =>
-        q.eq("userId", userId).eq("quizSlug", quizSlug)
-      )
-      .collect();
   },
 });
