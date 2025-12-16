@@ -36,6 +36,20 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_username", ["username"]),
 
+  questions: defineTable({
+    quizSlug: v.string(),
+    questionNumber: v.number(),
+    questionText: v.string(),
+    options: v.any(),
+    correctAnswer: v.string(),
+  }).index("by_quiz", ["quizSlug"]),
+
+  answers: defineTable({
+    userId: v.string(),
+    quizSlug: v.string(),
+    questionNumber: v.number(),
+    isCorrect: v.boolean(),
+  }).index("by_user_quiz_question", ["userId", "quizSlug", "questionNumber"]),
   diagnosisSessions: defineTable({
     userId: v.string(),
     disease: v.string(),
