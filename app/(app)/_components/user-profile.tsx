@@ -59,6 +59,8 @@ export default function UserProfile({ username }: UserProfileProps) {
         }
       : null;
 
+  console.log("User Profile Data:", user);
+
   const isOwnProfile = currentUser?._id === user?._id;
 
   const followers = useQuery(

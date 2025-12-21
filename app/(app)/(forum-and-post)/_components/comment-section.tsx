@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import type { FunctionReturnType } from "convex/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,9 +13,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, User, Reply } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
+type CommentType = FunctionReturnType<typeof api.comments.getComments>[number];
+type CommentWithReplies = CommentType & { replies: CommentWithReplies[] };
+
 interface CommentProps {
-  comment: any; // Type this properly
-  replies: any[];
+  comment: CommentWithReplies;
+  replies: CommentWithReplies[];
   postId: Id<"posts">;
   level?: number;
 }
@@ -48,7 +52,7 @@ function Comment({ comment, replies, postId, level = 0 }: CommentProps) {
     >
       <div className="flex gap-3">
         <Avatar className="h-8 w-8 border border-gray-200">
-          <AvatarImage src={comment.author.avatar} />
+          <AvatarImage src={comment.author.avatar || undefined} />
           <AvatarFallback className="bg-[#9D83C4]/10 text-[#9D83C4]">
             <User className="h-4 w-4" />
           </AvatarFallback>
@@ -159,8 +163,8 @@ export function CommentSection({ postId }: { postId: Id<"posts"> }) {
     );
 
   // Build tree
-  const commentMap = new Map();
-  const roots: any[] = [];
+  const commentMap = new Map<Id<"comments">, CommentWithReplies>();
+  const roots: CommentWithReplies[] = [];
 
   comments.forEach((c) => {
     commentMap.set(c._id, { ...c, replies: [] });
@@ -170,15 +174,15 @@ export function CommentSection({ postId }: { postId: Id<"posts"> }) {
     if (c.parentId) {
       const parent = commentMap.get(c.parentId);
       if (parent) {
-        parent.replies.push(commentMap.get(c._id));
+        parent.replies.push(commentMap.get(c._id)!);
       }
     } else {
-      roots.push(commentMap.get(c._id));
+      roots.push(commentMap.get(c._id)!);
     }
   });
 
   // Sort by time
-  const sortComments = (nodes: any[]) => {
+  const sortComments = (nodes: CommentWithReplies[]) => {
     nodes.sort((a, b) => b._creationTime - a._creationTime);
     nodes.forEach((n) => sortComments(n.replies));
   };

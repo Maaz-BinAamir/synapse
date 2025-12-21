@@ -45,7 +45,20 @@ export const get = query({
     if (!identity) {
       throw new Error("Not authenticated");
     }
-    return await ctx.db.query("posts").order("desc").collect();
+
+    const posts = await ctx.db.query("posts").order("desc").collect();
+
+    const postsWithProfile = await Promise.all(
+      posts.map(async (post) => {
+        const profile = await ctx.db
+          .query("profile")
+          .withIndex("by_user", (q) => q.eq("userId", post.authorId))
+          .first();
+        return { ...post, user: profile?.username };
+      })
+    );
+
+    return postsWithProfile;
   },
 });
 
@@ -97,10 +110,22 @@ export const getLatest = query({
 export const search = query({
   args: { query: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const posts = await ctx.db
       .query("posts")
       .withSearchIndex("search_title", (q) => q.search("title", args.query))
       .take(20);
+
+    const postsWithProfile = await Promise.all(
+      posts.map(async (post) => {
+        const profile = await ctx.db
+          .query("profile")
+          .withIndex("by_user", (q) => q.eq("userId", post.authorId))
+          .first();
+        return { ...post, user: profile?.username };
+      })
+    );
+
+    return postsWithProfile;
   },
 });
 

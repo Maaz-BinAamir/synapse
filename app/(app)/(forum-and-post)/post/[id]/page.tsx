@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { CommentSection } from "../../_components/comment-section";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function PostPage() {
   const params = useParams();
@@ -135,19 +136,21 @@ export default function PostPage() {
       <Card className="border-none shadow-sm bg-white/80 overflow-hidden">
         <CardHeader className="border-b border-gray-100 pb-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10 border border-gray-200">
-                <AvatarImage src={post.author.avatar || ""} />
-                <AvatarFallback className="bg-[#9D83C4]/10 text-[#9D83C4]">
-                  <User className="h-5 w-5" />
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold text-gray-900">
-                  {post.author.username}
-                </h3>
+            <Link href={`/user/${post.author.username}`}>
+              <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10 border border-gray-200">
+                  <AvatarImage src={post.author.avatar || ""} />
+                  <AvatarFallback className="bg-[#9D83C4]/10 text-[#9D83C4]">
+                    <User className="h-5 w-5" />
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    {post.author.username}
+                  </h3>
+                </div>
               </div>
-            </div>
+            </Link>
             {post.tags && (
               <div className="flex gap-2">
                 {post.tags.map((tag) => (

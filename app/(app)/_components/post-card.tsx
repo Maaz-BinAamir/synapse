@@ -1,11 +1,18 @@
-import { Doc } from "@/convex/_generated/dataModel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, MessageSquare, Heart, Eye } from "lucide-react";
+import { Clock, MessageSquare, Heart, Eye, User } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import type { FunctionReturnType } from "convex/server";
+import { api } from "@/convex/_generated/api";
 
-export default function PostCard({ post }: { post: Doc<"posts"> }) {
+type RequireAtLeastOne<T> = {
+  [K in keyof T]-?: Pick<T, K> & Partial<Omit<T, K>>
+}[keyof T];
+
+type GetPostsType  = RequireAtLeastOne<FunctionReturnType<typeof api.posts.get>[number] & FunctionReturnType<typeof api.posts.getCurrentUserPosts>[number]>;
+
+export default function PostCard({ post }: { post: GetPostsType }) {
   return (
     <motion.div
       key={post._id}
@@ -30,7 +37,7 @@ export default function PostCard({ post }: { post: Doc<"posts"> }) {
               </div>
               <span className="text-xs text-gray-400 flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                {new Date(post._creationTime).toLocaleDateString()}
+                {new Date(post._creationTime!).toLocaleDateString()}
               </span>
             </div>
 
@@ -41,16 +48,25 @@ export default function PostCard({ post }: { post: Doc<"posts"> }) {
               {post.body}
             </p>
 
-            <div className="flex items-center gap-6 text-gray-400 text-sm">
-              <span className="flex items-center gap-1.5">
-                <Heart className="w-4 h-4" /> {post.likeCount}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <MessageSquare className="w-4 h-4" /> {post.commentCount}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Eye className="w-4 h-4" /> {post.viewCount}
-              </span>
+            <div className="flex items-center justify-between  text-gray-400 text-sm">
+              <div className="flex items-center gap-6">
+                <span className="flex items-center gap-1.5">
+                  <Heart className="w-4 h-4" /> {post.likeCount}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <MessageSquare className="w-4 h-4" /> {post.commentCount}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Eye className="w-4 h-4" /> {post.viewCount}
+                </span>
+              </div>
+              <div>
+                {post?.user && (
+                  <span className="flex items-center gap-1.5">
+                    <User className="w-4 h-4" /> {post?.user ?? "user"}
+                  </span>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>

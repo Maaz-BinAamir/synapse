@@ -20,7 +20,11 @@ export const getUserByName = query({
       where: [{ field: "_id", value: profile.userId }],
     });
 
-    return { user, profile };
+    const avatar = profile.avatar
+      ? await ctx.storage.getUrl(profile.avatar)
+      : null;
+
+    return { user, profile: { ...profile, avatar } };
   },
 });
 
@@ -145,5 +149,19 @@ export const updateProfile = mutation({
         avatar: args.avatar,
       });
     }
+  },
+});
+
+export const isOnboardingComplete = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const profile = await ctx.db
+      .query("profile")
+      .withIndex("by_user", (q) => q.eq("userId", identity.subject))
+      .first();
+    return !!profile;
   },
 });
