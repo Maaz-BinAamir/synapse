@@ -18,7 +18,6 @@ import { authClient } from "@/lib/auth-client";
 
 import RectanglesBackground from "./_components/background";
 import { motion, Variants } from "framer-motion";
-import { FcGoogle } from "react-icons/fc";
 
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -197,7 +196,7 @@ export default function SignUpPage() {
                   type="submit"
                   disabled={isPending}
                 >
-                  {isPending ? "Creating account…" : "Sign up"}
+                  {isPending ? "Creating account…" : "Sign Up"}
                 </Button>
               </motion.div>
 
@@ -211,14 +210,6 @@ export default function SignUpPage() {
                   Signin
                 </Link>
               </motion.p>
-
-              {/* Google signup */}
-              <motion.div variants={popIn} className="flex justify-center">
-                <Button className="bg-[#9D83C4] hover:bg-[#7a64a8] border border-white px-10 py-5 text-xl">
-                  <FcGoogle size={20} />
-                  Signup with Google
-                </Button>
-              </motion.div>
             </motion.form>
           </Card>
         </motion.div>

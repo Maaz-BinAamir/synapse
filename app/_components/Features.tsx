@@ -146,10 +146,9 @@ export default function FeaturesSection() {
           </span>
           <div className="flex flex-col md:flex-row items-center gap-4 mt-4">
             <div>
-              <h3 className="text-2xl font-semibold">Tests</h3>
+              <h3 className="text-2xl font-semibold">Learning Resources</h3>
               <p className="text-gray-600 mt-2">
-                Share your knowledge on the forum. Contribute articles, discuss
-                ideas, and help the community grow.
+                A collection of medical resources for preparation of tests.
               </p>
             </div>
           </div>

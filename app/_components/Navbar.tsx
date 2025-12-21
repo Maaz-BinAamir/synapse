@@ -1,11 +1,13 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white shadow-sm flex items-center justify-between py-4 px-6">
       {/* Logo */}
       <div className="text-3xl font-bold text-purple-600">
-        <span className="inline-block w-6 h-6 bg-purple-500 rounded-md"></span>
+        {/* <span className="inline-block w-6 h-6 bg-purple-500 rounded-md"></span> */}
+        <Image src="/feature.png" alt="Logo" width={48} height={48} />
       </div>
 
       {/* Centered Links */}

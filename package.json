@@ -11,7 +11,7 @@
   "dependencies": {
     "@ai-sdk/groq": "^2.0.33",
     "@ai-sdk/react": "^2.0.115",
-    "@convex-dev/better-auth": "^0.9.7",
+    "@convex-dev/better-auth": "^0.10.0",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -25,7 +25,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@shadcn/ui": "^0.0.4",
     "ai": "^5.0.113",
-    "better-auth": "1.3.27",
+    "better-auth": "1.4.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

@@ -147,7 +147,7 @@ export default function SignInPage() {
                   type="submit"
                   disabled={isPending}
                 >
-                  {isPending ? "Signing in…" : "Sign in"}
+                  {isPending ? "Signing In…" : "Sign In"}
                 </Button>
               </motion.div>
 
@@ -161,8 +161,17 @@ export default function SignInPage() {
               </motion.div>
 
               <motion.div variants={popIn} className="flex justify-center">
-                <Button className="bg-[#9D83C4] hover:bg-[#7a64a8] border border-white px-10 py-5 text-xl">
-                  Signin with Google
+                <Button
+                  className="bg-[#9D83C4] hover:bg-[#7a64a8] border border-white px-10 py-5 text-xl"
+                  type="button"
+                  onClick={async () => {
+                    await authClient.signIn.social({
+                      provider: "google",
+                      callbackURL: "/onboarding",
+                    });
+                  }}
+                >
+                  Sign In with Google
                   <FcGoogle size={20} />
                 </Button>
               </motion.div>

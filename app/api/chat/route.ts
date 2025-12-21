@@ -3,11 +3,16 @@ import { streamText, convertToModelMessages, UIMessage } from "ai";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { isAuthenticated } from "@/lib/auth-server";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
+  if (!(await isAuthenticated())){
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   const { messages, sessionId }: { messages: UIMessage[]; sessionId: string } =
     await req.json();
 
