@@ -68,8 +68,13 @@ export function Sidebar() {
   };
 
   const handleLogout = async () => {
-    await authClient.signOut();
-    router.push("/signin");
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/signin");
+        },
+      },
+    });
   };
 
   const handleLinkClick = () => {
