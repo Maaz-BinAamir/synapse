@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { useConvexAuth } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,9 +24,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { FileText, ArrowRight, Activity, Brain } from "lucide-react";
 
 export default function DashboardPage() {
-  const quizStats = useQuery(api.dashboard.getQuizStats);
-  const diagnosisStats = useQuery(api.dashboard.getDiagnosisStats);
-  const recentPosts = useQuery(api.dashboard.getRecentViewedPosts);
+  const { isAuthenticated } = useConvexAuth();
+  const quizStats = useQuery(
+    api.dashboard.getQuizStats,
+    isAuthenticated ? {} : "skip"
+  );
+  const diagnosisStats = useQuery(
+    api.dashboard.getDiagnosisStats,
+    isAuthenticated ? {} : "skip"
+  );
+  const recentPosts = useQuery(
+    api.dashboard.getRecentViewedPosts,
+    isAuthenticated ? {} : "skip"
+  );
 
   const quizData = quizStats?.map((q) => ({
     date: format(new Date(q.date), "MMM dd"),

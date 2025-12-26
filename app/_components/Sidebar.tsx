@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -35,36 +35,41 @@ const sidebarItems = [
   { name: "Learning Resources", href: "/learning-resources", icon: BookOpen },
 ];
 
-// Helper functions for useSyncExternalStore
 const STORAGE_KEY = "sidebarCollapsed";
 
-function subscribe(callback: () => void) {
-  window.addEventListener("storage", callback);
-  return () => window.removeEventListener("storage", callback);
-}
+// Custom hook for localStorage with proper SSR handling
+function useLocalStorageState(key: string, defaultValue: boolean) {
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const handleStorage = (e: StorageEvent) => {
+        if (e.key === key) callback();
+      };
+      window.addEventListener("storage", handleStorage);
+      return () => window.removeEventListener("storage", handleStorage);
+    },
+    [key]
+  );
 
-function getSnapshot() {
-  const value = localStorage.getItem(STORAGE_KEY);
-  return value === "true";
-}
+  const getSnapshot = useCallback(() => {
+    const stored = localStorage.getItem(key);
+    return stored === null ? defaultValue : stored === "true";
+  }, [key, defaultValue]);
 
-function getServerSnapshot() {
-  return true; // Default to collapsed on server
+  const getServerSnapshot = useCallback(() => defaultValue, [defaultValue]);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const isCollapsed = useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot
-  );
+  const isCollapsed = useLocalStorageState(STORAGE_KEY, true);
 
   const toggleCollapsed = () => {
     const newValue = !isCollapsed;
     localStorage.setItem(STORAGE_KEY, String(newValue));
-    window.dispatchEvent(new StorageEvent("storage"));
+    // Trigger a storage event to update the state
+    window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
   };
 
   const handleLogout = async () => {
