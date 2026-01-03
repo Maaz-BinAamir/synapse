@@ -130,7 +130,7 @@ export const updateProfile = mutation({
         await ctx.storage.delete(existingProfile.avatar);
       }
 
-      await ctx.db.patch(existingProfile._id, {
+      await ctx.db.patch("profile", existingProfile._id, {
         username: args.username,
         bio: args.bio,
         interests: args.interests,

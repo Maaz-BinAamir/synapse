@@ -27,11 +27,11 @@ export const submitAnswer = mutation({
     if (!identity) {
       throw new Error("Not authenticated");
     }
-    const session = await ctx.db.get(args.sessionId);
+    const session = await ctx.db.get("diagnosisSessions", args.sessionId);
     if (!session || session.userId !== identity.subject) {
       throw new Error("Session not found or access denied");
     }
-    await ctx.db.patch(args.sessionId, { userAnswer: args.answer });
+    await ctx.db.patch("diagnosisSessions", args.sessionId, { userAnswer: args.answer });
 
     return {
       correctAnswer: session.disease,
@@ -42,6 +42,6 @@ export const submitAnswer = mutation({
 export const get = query({
   args: { sessionId: v.id("diagnosisSessions") },
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.sessionId);
+    return await ctx.db.get("diagnosisSessions", args.sessionId);
   },
 });

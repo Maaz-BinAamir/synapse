@@ -18,14 +18,14 @@ export const toggleLike = mutation({
       )
       .first();
 
-    const post = await ctx.db.get(args.postId);
+    const post = await ctx.db.get("posts", args.postId);
     if (!post) {
       throw new Error("Post not found");
     }
 
     if (existingLike) {
-      await ctx.db.delete(existingLike._id);
-      await ctx.db.patch(args.postId, {
+      await ctx.db.delete("likes", existingLike._id);
+      await ctx.db.patch("posts", args.postId, {
         likeCount: Math.max(0, (post.likeCount || 0) - 1),
       });
       return false; // Unliked
@@ -34,7 +34,7 @@ export const toggleLike = mutation({
         postId: args.postId,
         userId: userId,
       });
-      await ctx.db.patch(args.postId, {
+      await ctx.db.patch("posts", args.postId, {
         likeCount: (post.likeCount || 0) + 1,
       });
       return true; // Liked

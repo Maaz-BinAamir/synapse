@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export const getPostById = query({
   args: { postId: v.id("posts") },
   handler: async (ctx, args) => {
-    const post = await ctx.db.get(args.postId);
+    const post = await ctx.db.get("posts", args.postId);
 
     if (!post) {
       throw new Error("Post not found");
@@ -164,14 +164,14 @@ export const deletePost = mutation({
     if (!identity) {
       throw new Error("Not authenticated");
     }
-    const post = await ctx.db.get(args.postId);
+    const post = await ctx.db.get("posts", args.postId);
     if (!post) {
       throw new Error("Post not found");
     }
     if (post.authorId !== identity.subject) {
       throw new Error("Not authorized to delete this post");
     }
-    await ctx.db.delete(args.postId);
+    await ctx.db.delete("posts", args.postId);
     return true;
   },
 });

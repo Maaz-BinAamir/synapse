@@ -34,7 +34,7 @@ export const unfollowUsers = mutation({
       throw new Error("Follow relationship does not exist");
     }
 
-    await ctx.db.delete(toUnfollow._id);
+    await ctx.db.delete("followers", toUnfollow._id);
   },
 });
 

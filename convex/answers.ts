@@ -19,7 +19,7 @@ export const submitAnswer = mutation({
       .unique();
 
     if (existingAnswer) {
-      await ctx.db.patch(existingAnswer._id, {
+      await ctx.db.patch("quizQuestions", existingAnswer._id, {
         selectedOption: args.selectedOption,
       });
       return existingAnswer._id;

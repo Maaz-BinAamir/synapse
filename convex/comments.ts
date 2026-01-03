@@ -55,9 +55,9 @@ export const createComment = mutation({
     });
 
     // Increment comment count on post
-    const post = await ctx.db.get(args.postId);
+    const post = await ctx.db.get("posts", args.postId);
     if (post) {
-      await ctx.db.patch(args.postId, {
+      await ctx.db.patch("posts", args.postId, {
         commentCount: (post.commentCount || 0) + 1,
       });
     }

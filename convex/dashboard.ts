@@ -67,7 +67,7 @@ export const getRecentViewedPosts = query({
 
     const posts = await Promise.all(
       views.map(async (view) => {
-        const post = await ctx.db.get(view.postId);
+        const post = await ctx.db.get("posts", view.postId);
         if (!post) return null;
 
         const author = await ctx.db

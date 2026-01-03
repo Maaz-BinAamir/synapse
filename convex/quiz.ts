@@ -58,13 +58,13 @@ export const finishQuiz = mutation({
       .collect();
 
     for (const answer of answers) {
-      const question = await ctx.db.get(answer.questionId);
+      const question = await ctx.db.get("questions", answer.questionId);
       if (question && answer.selectedOption === question.correctOption) {
         score += 1;
       }
     }
 
-    await ctx.db.patch(args.quizId, {
+    await ctx.db.patch("quizzes", args.quizId, {
       completedAt,
       score,
     });
@@ -83,7 +83,7 @@ export const getQuizQuestions = query({
 
     const questions = [];
     for (const answer of answers) {
-      const question = await ctx.db.get(answer.questionId);
+      const question = await ctx.db.get("questions", answer.questionId);
       if (question) {
         questions.push(question);
       }
@@ -99,7 +99,7 @@ export const getQuizResults = query({
   },
   handler: async (ctx, args) => {
     // Get the quiz details
-    const quiz = await ctx.db.get(args.quizId);
+    const quiz = await ctx.db.get("quizzes", args.quizId);
     if (!quiz) {
       throw new Error("Quiz not found");
     }
@@ -113,7 +113,7 @@ export const getQuizResults = query({
     // Build detailed results
     const results = [];
     for (const quizQuestion of quizQuestions) {
-      const question = await ctx.db.get(quizQuestion.questionId);
+      const question = await ctx.db.get("questions", quizQuestion.questionId);
       if (question) {
         const isCorrect =
           quizQuestion.selectedOption !== undefined &&

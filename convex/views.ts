@@ -24,9 +24,9 @@ export const recordView = mutation({
         userId: userId,
       });
 
-      const post = await ctx.db.get(args.postId);
+      const post = await ctx.db.get("posts", args.postId);
       if (post) {
-        await ctx.db.patch(args.postId, {
+        await ctx.db.patch("posts", args.postId, {
           viewCount: (post.viewCount || 0) + 1,
         });
       }
