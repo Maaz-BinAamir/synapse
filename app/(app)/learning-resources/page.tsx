@@ -65,7 +65,7 @@ export default function LearningResourcesPage() {
                     width={120}
                     height={120}
                     priority
-                    className="object-contain max-w-20 sm:max-w-[120px]"
+                    className="object-contain"
                   />
                 </div>
               </AccordionTrigger>
@@ -137,7 +137,7 @@ export default function LearningResourcesPage() {
                     width={60}
                     height={60}
                     priority
-                    className="object-contain max-w-20 sm:max-w-[60px]"
+                    className="object-contain"
                   />
                 </div>
               </AccordionTrigger>
@@ -209,7 +209,7 @@ export default function LearningResourcesPage() {
                     width={60}
                     height={60}
                     priority
-                    className="object-contain max-w-[50px] sm:max-w-[60px]"
+                    className="object-contain"
                   />
                 </div>
               </AccordionTrigger>
