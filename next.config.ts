@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "https://impressive-egret-406.convex.cloud",
+        hostname: "impressive-egret-406.convex.cloud",
         port: "",
         pathname: "/**",
       },
