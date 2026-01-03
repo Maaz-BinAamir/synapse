@@ -467,7 +467,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         "query",
         "internal",
         {
-          join?: any;
           limit?: number;
           model: "user" | "session" | "account" | "verification" | "jwks";
           offset?: number;
@@ -511,7 +510,6 @@ export type ComponentApi<Name extends string | undefined = string | undefined> =
         "query",
         "internal",
         {
-          join?: any;
           model: "user" | "session" | "account" | "verification" | "jwks";
           select?: Array<string>;
           where?: Array<{
