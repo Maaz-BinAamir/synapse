@@ -8,7 +8,7 @@ import authConfig from "./auth.config";
 import { v } from "convex/values";
 import authSchema from "./betterAuth/schema";
 
-const siteUrl = process.env.SITE_URL!;
+const siteUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : process.env.SITE_URL!;
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
