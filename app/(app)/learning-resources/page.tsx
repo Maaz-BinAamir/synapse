@@ -33,10 +33,10 @@ export default function LearningResourcesPage() {
                 <Image
                   src="/stethoscope.png"
                   alt="Stethoscope"
-                  width={40}
-                  height={40}
+                  width={60}
+                  height={60}
                   priority
-                  className="absolute right-4 -top-4 max-w-[60px] w-full h-auto"
+                  className="absolute right-4 -top-4"
                 />
 
                 <div className="absolute left-0 -top-1 w-12 h-1 bg-orange-300" />
@@ -62,10 +62,10 @@ export default function LearningResourcesPage() {
                   <Image
                     src="/card1.png"
                     alt="Card 1"
-                    width={160}
-                    height={160}
+                    width={120}
+                    height={120}
                     priority
-                    className="object-contain max-w-20 sm:max-w-[120px] w-full h-auto"
+                    className="object-contain max-w-20 sm:max-w-[120px]"
                   />
                 </div>
               </AccordionTrigger>
@@ -137,7 +137,7 @@ export default function LearningResourcesPage() {
                     width={60}
                     height={60}
                     priority
-                    className="object-contain max-w-20 sm:max-w-[60px] w-full h-auto"
+                    className="object-contain max-w-20 sm:max-w-[60px]"
                   />
                 </div>
               </AccordionTrigger>
@@ -209,7 +209,7 @@ export default function LearningResourcesPage() {
                     width={60}
                     height={60}
                     priority
-                    className="object-contain max-w-[50px] sm:max-w-[60px] w-full h-auto"
+                    className="object-contain max-w-[50px] sm:max-w-[60px]"
                   />
                 </div>
               </AccordionTrigger>
