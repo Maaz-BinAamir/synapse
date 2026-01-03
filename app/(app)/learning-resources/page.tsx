@@ -30,16 +30,14 @@ export default function LearningResourcesPage() {
                 <div className="h-0.5 w-full bg-gray-200 rounded-full" />
 
                 {/* Stethoscope */}
-                <div className="absolute right-4 -top-4 w-[60px] h-[60px]">
-                  <Image
-                    src="/stethoscope.png"
-                    alt="Stethoscope"
-                    width={60}
-                    height={60}
-                    priority
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+                <Image
+                  src="/stethoscope.png"
+                  alt="Stethoscope"
+                  width={60}
+                  height={60}
+                  priority
+                  className="absolute right-4 -top-4"
+                />
 
                 <div className="absolute left-0 -top-1 w-12 h-1 bg-orange-300" />
                 <div className="absolute left-0 top-0 w-8 h-1 bg-blue-200" />
@@ -61,16 +59,15 @@ export default function LearningResourcesPage() {
               <AccordionTrigger className="flex items-center justify-center font-semibold text-lg text-[#548584] bg-linear-to-r from-[#ccfbeb4a] to-[#b4dafe3c] rounded-lg shadow-md py-7 px-6  data-[state=open]:text-[#2F5B5A] data-[state=open]:shadow-inner">
                 <div className="flex items-center gap-4">
                   United States Medical Licensing Examination
-                  <div className="w-[120px] h-[120px] shrink-0">
-                    <Image
-                      src="/card1.png"
-                      alt="Card 1"
-                      width={120}
-                      height={120}
-                      priority
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
+                  <Image
+                    src="/card1.png"
+                    alt="Card 1"
+                    width={120}
+                    height={120}
+                    priority
+                    sizes="120px"
+                    className="object-contain"
+                  />
                 </div>
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-4 text-balance">
@@ -135,16 +132,15 @@ export default function LearningResourcesPage() {
               <AccordionTrigger className="flex items-center justify-center font-semibold text-lg text-[#9C7241] bg-linear-to-r from-[#FEF4EB] to-[#FFF9F6] rounded-lg shadow-md py-7 px-6 data-[state=open]:text-[#5b3f1f] data-[state=open]:shadow-inner">
                 <div className="flex items-center gap-4">
                   Fellowship of the College of Physicians and Surgeons
-                  <div className="w-[60px] h-[60px] shrink-0">
-                    <Image
-                      src="/card4.png"
-                      alt="Card 2"
-                      width={60}
-                      height={60}
-                      priority
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
+                  <Image
+                    src="/card4.png"
+                    alt="Card 2"
+                    width={60}
+                    height={60}
+                    priority
+                    sizes="60px"
+                    className="object-contain"
+                  />
                 </div>
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-4 text-balance">
@@ -209,16 +205,15 @@ export default function LearningResourcesPage() {
               <AccordionTrigger className="flex items-center justify-center font-semibold text-lg text-[#711B9C] bg-linear-to-r from-[#f1e5ff58] to-[#f7efff7d] rounded-lg shadow-md py-7 px-6 data-[state=open]:text-[#3e0f56] data-[state=open]:shadow-inner">
                 <div className="flex items-center gap-4">
                   Professional and Linguistic Assessments Board
-                  <div className="w-[60px] h-[60px] shrink-0">
-                    <Image
-                      src="/card3.png"
-                      alt="Card 3"
-                      width={60}
-                      height={60}
-                      priority
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
+                  <Image
+                    src="/card3.png"
+                    alt="Card 3"
+                    width={60}
+                    height={60}
+                    priority
+                    sizes="60px"
+                    className="object-contain"
+                  />
                 </div>
               </AccordionTrigger>
 
