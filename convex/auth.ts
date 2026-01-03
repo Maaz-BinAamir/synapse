@@ -8,11 +8,20 @@ import authConfig from "./auth.config";
 import { v } from "convex/values";
 import authSchema from "./betterAuth/schema";
 
-const siteUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : process.env.SITE_URL!;
+// Use VERCEL_PROJECT_PRODUCTION_URL for production, fallback to SITE_URL
+// VERCEL_URL returns deployment URL (e.g., project-abc123.vercel.app) which causes auth issues
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : process.env.SITE_URL!;
 
 export const createAuthOptions = (ctx: GenericCtx<DataModel>) => {
   return {
     baseURL: siteUrl,
+    trustedOrigins: [
+      siteUrl,
+      // Add any additional trusted origins if needed
+      ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
+    ],
     database: authComponent.adapter(ctx),
     // Configure simple, non-verified email/password to get started
     emailAndPassword: {
