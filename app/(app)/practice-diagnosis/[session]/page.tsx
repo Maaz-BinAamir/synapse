@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,18 +46,29 @@ export default function PracticeSession() {
   const router = useRouter();
   const { session } = useParams();
 
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/chat",
-      body: { sessionId: session },
-    }),
+  const chatTransport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+      }),
+    [],
+  );
+
+  const { messages, sendMessage, status, error } = useChat({
+    id: String(session),
+    transport: chatTransport,
   });
 
   const submitAnswer = useMutation(api.diagnosisSession.submitAnswer);
 
   const onSend = (value: string) => {
     if (value.trim()) {
-      sendMessage({ text: value });
+      sendMessage(
+        { text: value },
+        {
+          body: { sessionId: String(session) },
+        },
+      );
       setInput("");
       setQuestionCounter((count) => count + 1);
     }
@@ -199,9 +210,12 @@ export default function PracticeSession() {
                 isDisabled={
                   status !== "ready" || questionCount >= MAX_QUESTIONS
                 }
-                placeholder="Ask me anything about medical practice..."
+                placeholder={questionCount >= MAX_QUESTIONS ? "You've asked all questions. Submit your diagnosis." : "Ask me anything about medical practice..."}
                 submitLabel="Send message"
               />
+              {error ? (
+                <p className="mt-2 text-sm text-red-600">{error.message}</p>
+              ) : null}
             </div>
           </CardContent>
         </Card>

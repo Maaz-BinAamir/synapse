@@ -1,5 +1,10 @@
 import { groq } from "@ai-sdk/groq";
-import { streamText, convertToModelMessages, UIMessage } from "ai";
+import {
+  streamText,
+  convertToModelMessages,
+  UIMessage,
+  smoothStream,
+} from "ai";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -7,23 +12,34 @@ import { isAuthenticated } from "@/lib/auth-server";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  if (!(await isAuthenticated())){
+  if (!(await isAuthenticated())) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const { messages, sessionId }: { messages: UIMessage[]; sessionId: string } =
-    await req.json();
+  const {
+    messages,
+    sessionId,
+  }: { messages?: UIMessage[]; sessionId?: string } = await req.json();
+
+  if (!sessionId || !messages) {
+    return new Response("Invalid request payload", { status: 400 });
+  }
 
   const diagnosisSession = await fetchQuery(api.diagnosisSession.get, {
     sessionId: sessionId as Id<"diagnosisSessions">,
   });
 
-  const disease = diagnosisSession?.disease;
+  if (!diagnosisSession) {
+    return new Response("Diagnosis session not found", { status: 404 });
+  }
+
+  const disease = diagnosisSession.disease;
 
   const modelMessages = [...convertToModelMessages(messages)];
-  console.log("Model Messages:", modelMessages);
 
   const result = streamText({
     model: groq("llama-3.1-8b-instant"),
@@ -34,7 +50,15 @@ export async function POST(req: Request) {
       Keep your answers concise but informative. DO NOT mention the disease name directly - only describe the symptoms.
       Act like a real patient who doesn't know their diagnosis yet.`,
     messages: modelMessages,
+    experimental_transform: smoothStream({ chunking: "word", delayInMs: 20 }),
   });
 
-  return result.toUIMessageStreamResponse();
+  return result.toUIMessageStreamResponse({
+    onError: (error) => {
+      if (error instanceof Error) {
+        return error.message;
+      }
+      return "An error occurred while streaming the diagnosis chat.";
+    },
+  });
 }
