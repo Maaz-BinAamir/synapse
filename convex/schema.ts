@@ -59,12 +59,7 @@ export default defineSchema({
     text: v.string(),
     options: v.array(v.string()),
     test: v.union(v.literal("PLAB"), v.literal("FCPS"), v.literal("USMLE")),
-    correctOption: v.union(
-      v.literal(0),
-      v.literal(1),
-      v.literal(2),
-      v.literal(3)
-    ),
+    correctOption: v.number(),
   }).index("by_test", ["test"]),
 
   quizzes: defineTable({

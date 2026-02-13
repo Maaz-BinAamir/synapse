@@ -6,14 +6,18 @@ export const createQuestion = mutation({
     text: v.string(),
     options: v.array(v.string()),
     test: v.union(v.literal("PLAB"), v.literal("FCPS"), v.literal("USMLE")),
-    correctOption: v.union(
-      v.literal(0),
-      v.literal(1),
-      v.literal(2),
-      v.literal(3)
-    ),
+    correctOption: v.number(),
   },
   handler: async (ctx, args) => {
+    const isValidCorrectOption =
+      Number.isInteger(args.correctOption) &&
+      args.correctOption >= 0 &&
+      args.correctOption < args.options.length;
+
+    if (!isValidCorrectOption) {
+      throw new Error("Invalid correct option index");
+    }
+
     const questionId = await ctx.db.insert("questions", {
       text: args.text,
       options: args.options,

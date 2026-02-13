@@ -21,16 +21,25 @@ export const createQuiz = mutation({
       .withIndex("by_test", (q) => q.eq("test", args.test))
       .collect();
 
-    // const randomQuestions: Doc<"questions">[] = [];
-    const quizQuestions = questions.slice(0, 10);
-    // let i = 0;
-    // while (i < 10) {
-    //   const randomIndex = Math.floor(Math.random() * questions.length);
-    //   if (!randomQuestions.includes(questions[randomIndex])) {
-    //     randomQuestions.push(questions[randomIndex]);
-    //     i++;
-    //   }
-    // }
+    const QUESTION_COUNT = 10;
+    const shuffledQuestions = [...questions];
+    for (let i = shuffledQuestions.length - 1; i > 0; i--) {
+      const randomIndex = Math.floor(Math.random() * (i + 1));
+      [shuffledQuestions[i], shuffledQuestions[randomIndex]] = [
+        shuffledQuestions[randomIndex],
+        shuffledQuestions[i],
+      ];
+    }
+
+    const uniqueQuestions = shuffledQuestions.filter(
+      (question, index, array) =>
+        index ===
+        array.findIndex((candidate) => candidate._id === question._id),
+    );
+    const quizQuestions = uniqueQuestions.slice(
+      0,
+      Math.min(QUESTION_COUNT, uniqueQuestions.length),
+    );
 
     for (const question of quizQuestions) {
       await ctx.db.insert("quizQuestions", {
