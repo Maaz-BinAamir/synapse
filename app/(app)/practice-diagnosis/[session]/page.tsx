@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useReducer } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,14 +34,58 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
+type State = {
+  questionCount: number;
+  input: string;
+  isModalOpen: boolean;
+  diagnosis: string;
+  correctAnswer: string;
+  showResult: boolean;
+  isCorrect: boolean;
+};
+
+type Action =
+  | { type: "INCREMENT_QUESTION" }
+  | { type: "SET_INPUT"; payload: string }
+  | { type: "SET_MODAL_OPEN"; payload: boolean }
+  | { type: "SET_DIAGNOSIS"; payload: string }
+  | { type: "SHOW_RESULT"; payload: { correctAnswer: string; isCorrect: boolean } };
+
+const initialState: State = {
+  questionCount: 0,
+  input: "",
+  isModalOpen: false,
+  diagnosis: "",
+  correctAnswer: "",
+  showResult: false,
+  isCorrect: false,
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "INCREMENT_QUESTION":
+      return { ...state, questionCount: state.questionCount + 1, input: "" };
+    case "SET_INPUT":
+      return { ...state, input: action.payload };
+    case "SET_MODAL_OPEN":
+      return { ...state, isModalOpen: action.payload };
+    case "SET_DIAGNOSIS":
+      return { ...state, diagnosis: action.payload };
+    case "SHOW_RESULT":
+      return {
+        ...state,
+        correctAnswer: action.payload.correctAnswer,
+        isCorrect: action.payload.isCorrect,
+        showResult: true,
+      };
+    default:
+      return state;
+  }
+}
+
 export default function PracticeSession() {
-  const [questionCount, setQuestionCounter] = useState(0);
-  const [input, setInput] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [diagnosis, setDiagnosis] = useState("");
-  const [correctAnswer, setCorrectAnswer] = useState("");
-  const [showResult, setShowResult] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false); // remove this additional state in the future
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { questionCount, input, isModalOpen, diagnosis, correctAnswer, showResult, isCorrect } = state;
 
   const router = useRouter();
   const { session } = useParams();
@@ -69,8 +113,7 @@ export default function PracticeSession() {
           body: { sessionId: String(session) },
         },
       );
-      setInput("");
-      setQuestionCounter((count) => count + 1);
+      dispatch({ type: "INCREMENT_QUESTION" });
     }
   };
 
@@ -87,9 +130,10 @@ export default function PracticeSession() {
     const isAnswerCorrect =
       diagnosis.trim().toLowerCase() === correctAnswer.toLowerCase();
 
-    setIsCorrect(isAnswerCorrect);
-    setCorrectAnswer(correctAnswer);
-    setShowResult(true);
+    dispatch({
+      type: "SHOW_RESULT",
+      payload: { correctAnswer, isCorrect: isAnswerCorrect },
+    });
 
     // Redirect after 3 seconds
     setTimeout(() => {
@@ -115,7 +159,7 @@ export default function PracticeSession() {
                 </p>
               </div>
               <Button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => dispatch({ type: "SET_MODAL_OPEN", payload: true })}
                 variant="outline"
                 className="border-[#9D83C4] text-[#9D83C4] hover:bg-[#9D83C4] hover:text-white"
               >
@@ -154,12 +198,12 @@ export default function PracticeSession() {
                           {message.parts.map((part, index) => {
                             if (part.type === "text") {
                               return message.role === "assistant" ? (
-                                <MessageResponse key={index}>
+                                <MessageResponse key={`${part.type}-${index}`}>
                                   {part.text}
                                 </MessageResponse>
                               ) : (
                                 <div
-                                  key={index}
+                                  key={`${part.type}-${index}`}
                                   className="whitespace-pre-wrap"
                                 >
                                   {part.text}
@@ -205,7 +249,7 @@ export default function PracticeSession() {
             <div className="border-t border-[#9D83C4]/10 p-4 bg-white/40">
               <ChatInput
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => dispatch({ type: "SET_INPUT", payload: e.target.value })}
                 onSubmit={onSend}
                 isDisabled={
                   status !== "ready" || questionCount >= MAX_QUESTIONS
@@ -224,7 +268,7 @@ export default function PracticeSession() {
       {/* Diagnosis Modal */}
       <Dialog
         open={isModalOpen}
-        onOpenChange={canClose ? setIsModalOpen : undefined}
+        onOpenChange={canClose ? (open) => dispatch({ type: "SET_MODAL_OPEN", payload: open }) : undefined}
       >
         <DialogContent className="sm:max-w-md" showCloseButton={canClose}>
           {!showResult ? (
@@ -249,7 +293,7 @@ export default function PracticeSession() {
                     id="diagnosis-input"
                     placeholder="Enter the disease/condition"
                     value={diagnosis}
-                    onChange={(e) => setDiagnosis(e.target.value)}
+                    onChange={(e) => dispatch({ type: "SET_DIAGNOSIS", payload: e.target.value })}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleSubmitDiagnosis();
                     }}

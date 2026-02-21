@@ -103,11 +103,14 @@ export function Sidebar() {
 
       {/* Mobile Overlay */}
       <div
+        aria-hidden="true"
         className={cn(
           "md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity duration-300",
           isCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"
         )}
         onClick={toggleCollapsed}
+        onKeyDown={(e) => e.key === "Escape" && toggleCollapsed()}
+        role="presentation"
       />
 
       <div

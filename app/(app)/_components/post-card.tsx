@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MessageSquare, Heart, Eye, User } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "@/convex/_generated/api";
 
@@ -14,7 +14,7 @@ type GetPostsType  = RequireAtLeastOne<FunctionReturnType<typeof api.posts.get>[
 
 export default function PostCard({ post }: { post: GetPostsType }) {
   return (
-    <motion.div
+    <m.div
       key={post._id}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -71,6 +71,6 @@ export default function PostCard({ post }: { post: GetPostsType }) {
           </CardContent>
         </Card>
       </Link>
-    </motion.div>
+    </m.div>
   );
 }

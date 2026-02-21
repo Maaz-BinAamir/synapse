@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/auth-client";
 
 import RectanglesBackground from "./_components/background";
-import { motion, Variants } from "framer-motion";
+import { m, Variants } from "framer-motion";
 
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -89,7 +89,7 @@ export default function SignUpPage() {
 
       <div className="flex h-full">
         {/* Left image  */}
-        <motion.div
+        <m.div
           className="w-1/3 flex items-center justify-center"
           variants={popIn}
           initial="hidden"
@@ -100,33 +100,34 @@ export default function SignUpPage() {
               src="/signup.png"
               alt="Signup illustration"
               fill
+              sizes="(max-width: 768px) 75vw, 25vw"
               className="object-contain"
             />
           </div>
-        </motion.div>
+        </m.div>
 
         {/* Right form card */}
-        <motion.div
+        <m.div
           className="w-2/3 grid place-items-center"
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
         >
           <Card className="bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl p-8 rounded-2xl w-1/2 flex flex-col justify-center">
-            <motion.div variants={popIn}>
+            <m.div variants={popIn}>
               <CardHeader>
                 <CardTitle className="text-white text-4xl text-center">
                   Sign Up
                 </CardTitle>
               </CardHeader>
-            </motion.div>
+            </m.div>
 
-            <motion.form
+            <m.form
               variants={staggerContainer}
               onSubmit={onSubmit}
               className="space-y-4 flex flex-col items-center"
             >
-              <motion.div variants={popIn} className="w-4/5">
+              <m.div variants={popIn} className="w-4/5">
                 <Label className="flex flex-col gap-1 items-start">
                   <span className="text-white text-base">Name</span>
                   <Input
@@ -141,9 +142,9 @@ export default function SignUpPage() {
                     </p>
                   )}
                 </Label>
-              </motion.div>
+              </m.div>
 
-              <motion.div variants={popIn} className="w-4/5">
+              <m.div variants={popIn} className="w-4/5">
                 <Label className="flex flex-col gap-1 items-start">
                   <span className="text-white text-base">Email</span>
                   <Input
@@ -158,9 +159,9 @@ export default function SignUpPage() {
                     </p>
                   )}
                 </Label>
-              </motion.div>
+              </m.div>
 
-              <motion.div variants={popIn} className="w-4/5">
+              <m.div variants={popIn} className="w-4/5">
                 <Label className="flex flex-col gap-1 items-start">
                   <span className="text-white text-base">Password</span>
                   <Input
@@ -175,22 +176,22 @@ export default function SignUpPage() {
                     </p>
                   )}
                 </Label>
-              </motion.div>
+              </m.div>
 
               {/* Server error */}
               {serverError && (
-                <motion.p
+                <m.p
                   variants={popIn}
                   initial="hidden"
                   animate="visible"
                   className="text-sm text-red-500"
                 >
                   {serverError}
-                </motion.p>
+                </m.p>
               )}
 
               {/* Sign Up button */}
-              <motion.div variants={popIn} className="flex justify-center mt-2">
+              <m.div variants={popIn} className="flex justify-center mt-2">
                 <Button
                   className="bg-[#9D83C4] hover:bg-[#7a64a8] border border-white px-10 py-5 text-xl"
                   type="submit"
@@ -198,10 +199,10 @@ export default function SignUpPage() {
                 >
                   {isPending ? "Creating account…" : "Sign Up"}
                 </Button>
-              </motion.div>
+              </m.div>
 
               {/* Sign in link */}
-              <motion.p
+              <m.p
                 variants={popIn}
                 className="text-white flex justify-center"
               >
@@ -209,10 +210,10 @@ export default function SignUpPage() {
                 <Link className="underline ml-2" href="/signin">
                   Signin
                 </Link>
-              </motion.p>
-            </motion.form>
+              </m.p>
+            </m.form>
           </Card>
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

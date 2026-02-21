@@ -5,23 +5,21 @@ import { useConvexAuth } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts";
+import dynamic from "next/dynamic";
 import { format } from "date-fns";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileText, ArrowRight, Activity, Brain } from "lucide-react";
+
+const QuizPerformanceChart = dynamic(
+  () => import("./charts").then((m) => m.QuizPerformanceChart),
+  { ssr: false, loading: () => <Skeleton className="h-full w-full" /> }
+);
+
+const DiagnosisAccuracyChart = dynamic(
+  () => import("./charts").then((m) => m.DiagnosisAccuracyChart),
+  { ssr: false, loading: () => <Skeleton className="h-full w-full" /> }
+);
 
 export default function DashboardPage() {
   const { isAuthenticated } = useConvexAuth();
@@ -55,8 +53,6 @@ export default function DashboardPage() {
         },
       ]
     : [];
-
-  const COLORS = ["#4ade80", "#f87171"];
 
   return (
     <div className="min-h-full w-full bg-linear-to-br from-[#F7E8FF] via-white to-[#E0F7FA] p-6 md:p-8">
@@ -114,41 +110,7 @@ export default function DashboardPage() {
                     No quiz data available
                   </div>
                 ) : (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={quizData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                      <XAxis
-                        dataKey="date"
-                        stroke="#888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                      />
-                      <YAxis
-                        stroke="#888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                        domain={[0, 10]}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "rgba(255, 255, 255, 0.9)",
-                          borderRadius: "8px",
-                          border: "none",
-                          boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="score"
-                        stroke="#9D83C4"
-                        strokeWidth={3}
-                        dot={{ fill: "#9D83C4", strokeWidth: 2 }}
-                        activeDot={{ r: 6 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <QuizPerformanceChart data={quizData ?? []} />
                 )}
               </div>
             </CardContent>
@@ -171,28 +133,7 @@ export default function DashboardPage() {
                     No diagnosis data available
                   </div>
                 ) : (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={diagnosisData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {diagnosisData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend verticalAlign="bottom" height={36} />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <DiagnosisAccuracyChart data={diagnosisData} />
                 )}
               </div>
             </CardContent>

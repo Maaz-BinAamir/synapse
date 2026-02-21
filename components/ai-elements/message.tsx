@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { FileUIPart, UIMessage } from "ai";
+import Image from "next/image";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -20,7 +21,7 @@ import {
   XIcon,
 } from "lucide-react";
 import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
-import { createContext, memo, useContext, useEffect, useState } from "react";
+import { createContext, memo, useContext, useState } from "react";
 import { Streamdown } from "streamdown";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
@@ -190,12 +191,10 @@ export const MessageBranchContent = ({
   const { currentBranch, setBranches, branches } = useMessageBranch();
   const childrenArray = Array.isArray(children) ? children : [children];
 
-  // Use useEffect to update branches when they change
-  useEffect(() => {
-    if (branches.length !== childrenArray.length) {
-      setBranches(childrenArray);
-    }
-  }, [childrenArray, branches, setBranches]);
+  // Sync branches during render when count changes (avoids useEffect for event-handler-like logic)
+  if (branches.length !== childrenArray.length) {
+    setBranches(childrenArray);
+  }
 
   return childrenArray.map((branch, index) => (
     <div
@@ -349,11 +348,11 @@ export function MessageAttachment({
     >
       {isImage ? (
         <>
-          <img
+          <Image
             alt={filename || "attachment"}
             className="size-full object-cover"
             height={100}
-            src={data.url}
+            src={data.url!}
             width={100}
           />
           {onRemove && (
