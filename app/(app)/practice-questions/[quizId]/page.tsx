@@ -135,7 +135,7 @@ export default function QuizPage() {
     setSelectedOptionIndex(null);
 
     if (currentQuestionIndex + 1 < quizQuestions.length) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setCurrentQuestionIndex((prev) => prev + 1);
     } else {
       // Finish the quiz
       await finishQuiz({ quizId: quizId as Id<"quizzes"> });
@@ -145,7 +145,7 @@ export default function QuizPage() {
 
   const handlePrev = () => {
     if (currentQuestionIndex > 0)
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      setCurrentQuestionIndex((prev) => prev - 1);
   };
 
   return (
@@ -198,7 +198,7 @@ export default function QuizPage() {
                 const isSelected = selectedOptionIndex === optionIndex;
 
                 return (
-                  <li key={optionIndex}>
+                  <li key={optionText}>
                     <label
                       htmlFor={inputId}
                       className={`flex items-start cursor-pointer p-4 rounded-lg transition-colors duration-200 shadow-sm

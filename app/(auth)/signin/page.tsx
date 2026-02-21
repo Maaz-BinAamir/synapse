@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, Variants } from "framer-motion";
+import { m, Variants } from "framer-motion";
 import RectanglesBackground from "./_components/background";
 import { FcGoogle } from "react-icons/fc";
 
@@ -78,7 +78,7 @@ export default function SignInPage() {
       </div>
 
       <div className="w-2/3 flex items-center justify-center">
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
@@ -86,18 +86,18 @@ export default function SignInPage() {
         >
           <Card className="bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl p-8 rounded-2xl w-full flex flex-col justify-center">
             <CardHeader>
-              <motion.div variants={popIn}>
+              <m.div variants={popIn}>
                 <CardTitle className="text-white text-4xl text-center">
                   Sign In
                 </CardTitle>
-              </motion.div>
+              </m.div>
             </CardHeader>
 
             <form
               onSubmit={onSubmit}
               className="space-y-4 flex flex-col items-center"
             >
-              <motion.div variants={popIn} className="w-4/5">
+              <m.div variants={popIn} className="w-4/5">
                 <Label className="flex flex-col gap-1 items-start">
                   <span className="text-white text-base">Email</span>
                   <Input
@@ -112,9 +112,9 @@ export default function SignInPage() {
                     </p>
                   )}
                 </Label>
-              </motion.div>
+              </m.div>
 
-              <motion.div variants={popIn} className="w-4/5">
+              <m.div variants={popIn} className="w-4/5">
                 <Label className="flex flex-col gap-1 items-start">
                   <span className="text-white text-base">Password</span>
                   <Input
@@ -129,19 +129,19 @@ export default function SignInPage() {
                     </p>
                   )}
                 </Label>
-              </motion.div>
+              </m.div>
               {serverError && (
-                <motion.p
+                <m.p
                   variants={popIn}
                   initial="hidden"
                   animate="visible"
                   className="text-sm text-red-500"
                 >
                   {serverError}
-                </motion.p>
+                </m.p>
               )}
 
-              <motion.div variants={popIn} className="flex justify-center">
+              <m.div variants={popIn} className="flex justify-center">
                 <Button
                   className="bg-[#9D83C4] hover:bg-[#7a64a8] border border-white px-10 py-5 text-xl"
                   type="submit"
@@ -149,18 +149,18 @@ export default function SignInPage() {
                 >
                   {isPending ? "Signing In…" : "Sign In"}
                 </Button>
-              </motion.div>
+              </m.div>
 
-              <motion.div variants={popIn}>
+              <m.div variants={popIn}>
                 <p className="text-white flex justify-center">
                   Do not have an account?
                   <Link className="underline ml-2" href="/signup">
                     Register now
                   </Link>
                 </p>
-              </motion.div>
+              </m.div>
 
-              <motion.div variants={popIn} className="flex justify-center">
+              <m.div variants={popIn} className="flex justify-center">
                 <Button
                   className="bg-[#9D83C4] hover:bg-[#7a64a8] border border-white px-10 py-5 text-xl"
                   type="button"
@@ -174,14 +174,14 @@ export default function SignInPage() {
                   Sign In with Google
                   <FcGoogle size={20} />
                 </Button>
-              </motion.div>
+              </m.div>
             </form>
           </Card>
-        </motion.div>
+        </m.div>
       </div>
 
       <div className="w-1/3 flex items-center justify-center">
-        <motion.div
+        <m.div
           variants={popIn}
           initial="hidden"
           animate="visible"
@@ -191,9 +191,10 @@ export default function SignInPage() {
             src="/signin.png"
             alt="Signin illustration"
             fill
+            sizes="(max-width: 768px) 75vw, 25vw"
             className="object-contain"
           />
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

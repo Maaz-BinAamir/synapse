@@ -71,6 +71,184 @@ const formSchema = z.object({
   images: z.array(z.string()).optional(),
 });
 
+// ── Sub-components ──────────────────────────────────────────────────────────
+
+interface ImageUploadSectionProps {
+  selectedImages: File[];
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function ImageUploadSection({
+  selectedImages,
+  onAdd,
+  onRemove,
+  fileInputRef,
+  onFileChange,
+}: ImageUploadSectionProps) {
+  return (
+    <div className="space-y-3">
+      <p className="text-gray-700 font-medium flex items-center gap-2">
+        <ImageIcon className="w-4 h-4 text-[#9D83C4]" /> Images
+      </p>
+      <div className="flex flex-wrap gap-3">
+        {selectedImages.map((image, index) => (
+          <div
+            key={`${image.name}-${image.size}-${index}`}
+            className="relative w-24 h-24 rounded-lg border-2 border-[#9D83C4]/20 overflow-hidden group"
+          >
+            <Image
+              src={URL.createObjectURL(image)}
+              alt={`Preview ${index + 1}`}
+              width={96}
+              height={96}
+              className="w-full h-full object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => onRemove(index)}
+              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={onAdd}
+          className="w-24 h-24 rounded-lg border-2 border-dashed border-[#9D83C4]/40 hover:border-[#9D83C4] flex items-center justify-center bg-white/50 transition-all duration-300"
+        >
+          <Plus className="w-6 h-6 text-[#9D83C4]" />
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={onFileChange}
+          className="hidden"
+        />
+      </div>
+      <p className="text-xs text-gray-400">Click the + button to add images</p>
+    </div>
+  );
+}
+
+interface TagsSectionProps {
+  tags: string[];
+  tagInput: string;
+  openTagCombo: boolean;
+  onOpenChange: (open: boolean) => void;
+  onTagInputChange: (value: string) => void;
+  onAddTag: (tag: string) => void;
+  onAddCustomTag: () => void;
+  onRemoveTag: (tag: string) => void;
+}
+
+function TagsSection({
+  tags,
+  tagInput,
+  openTagCombo,
+  onOpenChange,
+  onTagInputChange,
+  onAddTag,
+  onAddCustomTag,
+  onRemoveTag,
+}: TagsSectionProps) {
+  return (
+    <div className="space-y-3">
+      <p className="text-gray-700 font-medium flex items-center gap-2">
+        <Plus className="w-4 h-4 text-[#FED7AA]" /> Tags
+      </p>
+      <Popover open={openTagCombo} onOpenChange={onOpenChange}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={openTagCombo}
+            aria-controls="tag-combobox-list"
+            disabled={tags.length >= 5}
+            className="w-full justify-between border-gray-200 focus-visible:border-[#9D83C4] focus-visible:ring-[#9D83C4]/20 transition-all duration-300 bg-white/50"
+          >
+            {tags.length >= 5
+              ? "Maximum tags reached (5/5)"
+              : "Select or add tags..."}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-full p-0">
+          <Command>
+            <CommandInput
+              placeholder="Search or type to add..."
+              value={tagInput}
+              onValueChange={onTagInputChange}
+            />
+            <CommandList id="tag-combobox-list">
+              <CommandEmpty>
+                <div className="p-2">
+                  <p className="text-sm text-gray-500 mb-2">
+                    No results found.
+                  </p>
+                  {tagInput.trim() && tags.length < 5 && (
+                    <Button
+                      size="sm"
+                      onClick={onAddCustomTag}
+                      className="w-full bg-[#9D83C4] hover:bg-[#8a72b0]"
+                    >
+                      Add &quot;{tagInput.trim()}&quot;
+                    </Button>
+                  )}
+                </div>
+              </CommandEmpty>
+              <CommandGroup>
+                {INTERESTS_LIST.filter(
+                  (interest) => !tags.includes(interest)
+                ).map((interest) => (
+                  <CommandItem
+                    key={interest}
+                    value={interest}
+                    onSelect={() => onAddTag(interest)}
+                  >
+                    <Check className="mr-2 h-4 w-4 opacity-0" />
+                    {interest}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {tags.map((tag) => (
+            <Badge
+              key={tag}
+              variant="secondary"
+              className="bg-[#9D83C4]/10 text-[#9D83C4] border border-[#9D83C4]/20 hover:bg-[#9D83C4]/20"
+            >
+              {tag}
+              <button
+                type="button"
+                onClick={() => onRemoveTag(tag)}
+                className="ml-2 hover:text-red-500"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </Badge>
+          ))}
+        </div>
+      )}
+      <p className="text-xs text-gray-400">
+        {tags.length}/5 tags selected. Choose from list or add custom tags.
+      </p>
+    </div>
+  );
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
 export default function CreatePostPage() {
   const createPost = useMutation(api.posts.create);
   const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
@@ -182,53 +360,13 @@ export default function CreatePostPage() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-6"
               >
-                {/* Image Upload Section */}
-                <div className="space-y-3">
-                  <label className="text-gray-700 font-medium flex items-center gap-2">
-                    <ImageIcon className="w-4 h-4 text-[#9D83C4]" /> Images
-                  </label>
-                  <div className="flex flex-wrap gap-3">
-                    {selectedImages.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative w-24 h-24 rounded-lg border-2 border-[#9D83C4]/20 overflow-hidden group"
-                      >
-                        <Image
-                          src={URL.createObjectURL(image)}
-                          alt={`Preview ${index + 1}`}
-                          width={96}
-                          height={96}
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="w-24 h-24 rounded-lg border-2 border-dashed border-[#9D83C4]/40 hover:border-[#9D83C4] flex items-center justify-center bg-white/50 transition-all duration-300"
-                    >
-                      <Plus className="w-6 h-6 text-[#9D83C4]" />
-                    </button>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImageSelect}
-                      className="hidden"
-                    />
-                  </div>
-                  <p className="text-xs text-gray-400">
-                    Click the + button to add images
-                  </p>
-                </div>
+                <ImageUploadSection
+                  selectedImages={selectedImages}
+                  onAdd={() => fileInputRef.current?.click()}
+                  onRemove={removeImage}
+                  fileInputRef={fileInputRef}
+                  onFileChange={handleImageSelect}
+                />
 
                 <FormField
                   control={form.control}
@@ -270,93 +408,16 @@ export default function CreatePostPage() {
                   )}
                 />
 
-                {/* Tags Section */}
-                <div className="space-y-3">
-                  <label className="text-gray-700 font-medium flex items-center gap-2">
-                    <Plus className="w-4 h-4 text-[#FED7AA]" /> Tags
-                  </label>
-                  <Popover open={openTagCombo} onOpenChange={setOpenTagCombo}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={openTagCombo}
-                        disabled={tags.length >= 5}
-                        className="w-full justify-between border-gray-200 focus-visible:border-[#9D83C4] focus-visible:ring-[#9D83C4]/20 transition-all duration-300 bg-white/50"
-                      >
-                        {tags.length >= 5
-                          ? "Maximum tags reached (5/5)"
-                          : "Select or add tags..."}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0">
-                      <Command>
-                        <CommandInput
-                          placeholder="Search or type to add..."
-                          value={tagInput}
-                          onValueChange={setTagInput}
-                        />
-                        <CommandList>
-                          <CommandEmpty>
-                            <div className="p-2">
-                              <p className="text-sm text-gray-500 mb-2">
-                                No results found.
-                              </p>
-                              {tagInput.trim() && tags.length < 5 && (
-                                <Button
-                                  size="sm"
-                                  onClick={addCustomTag}
-                                  className="w-full bg-[#9D83C4] hover:bg-[#8a72b0]"
-                                >
-                                  Add &quot;{tagInput.trim()}&quot;
-                                </Button>
-                              )}
-                            </div>
-                          </CommandEmpty>
-                          <CommandGroup>
-                            {INTERESTS_LIST.filter(
-                              (interest) => !tags.includes(interest)
-                            ).map((interest) => (
-                              <CommandItem
-                                key={interest}
-                                value={interest}
-                                onSelect={() => addTag(interest)}
-                              >
-                                <Check className="mr-2 h-4 w-4 opacity-0" />
-                                {interest}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                  {tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {tags.map((tag, index) => (
-                        <Badge
-                          key={index}
-                          variant="secondary"
-                          className="bg-[#9D83C4]/10 text-[#9D83C4] border border-[#9D83C4]/20 hover:bg-[#9D83C4]/20"
-                        >
-                          {tag}
-                          <button
-                            type="button"
-                            onClick={() => removeTag(tag)}
-                            className="ml-2 hover:text-red-500"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                  <p className="text-xs text-gray-400">
-                    {tags.length}/5 tags selected. Choose from list or add
-                    custom tags.
-                  </p>
-                </div>
+                <TagsSection
+                  tags={tags}
+                  tagInput={tagInput}
+                  openTagCombo={openTagCombo}
+                  onOpenChange={setOpenTagCombo}
+                  onTagInputChange={setTagInput}
+                  onAddTag={addTag}
+                  onAddCustomTag={addCustomTag}
+                  onRemoveTag={removeTag}
+                />
 
                 <div className="pt-4 flex justify-center">
                   <Button

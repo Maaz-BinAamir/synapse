@@ -366,6 +366,7 @@ export default function ProfileForm({ user, onClose }: ProfileFormProps) {
                             variant="outline"
                             role="combobox"
                             aria-expanded={openInterestCombo}
+                            aria-controls="interest-combobox-list"
                             disabled={field.value.length >= 10}
                             className="w-full justify-between bg-white border-gray-200 hover:bg-white focus:border-[#9D83C4] focus:ring-[#9D83C4]"
                           >
@@ -382,7 +383,7 @@ export default function ProfileForm({ user, onClose }: ProfileFormProps) {
                               value={interestInput}
                               onValueChange={setInterestInput}
                             />
-                            <CommandList>
+                            <CommandList id="interest-combobox-list">
                               <CommandEmpty>
                                 <div className="p-2">
                                   <p className="text-sm text-gray-500 mb-2">

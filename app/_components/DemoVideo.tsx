@@ -25,6 +25,7 @@ export default function DemoVideo() {
         {isPlaying ? (
           <iframe
             src="https://drive.google.com/file/d/1lT_2gUiAX9M2KEIjg0AK95rafGR4KA1Q/preview"
+            title="Synapse Demo Video"
             className="w-full h-full rounded-[28px]"
             allow="autoplay; fullscreen"
             allowFullScreen

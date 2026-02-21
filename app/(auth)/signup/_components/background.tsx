@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function RectanglesBackground() {
   const widths = ["80%", "70%", "60%", "70%", "80%"];
@@ -15,8 +15,8 @@ export default function RectanglesBackground() {
   return (
     <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none flex flex-col justify-between">
       {widths.map((w, i) => (
-        <motion.div
-          key={i}
+        <m.div
+          key={borderRadiusClasses[i]}
           initial={{ x: "280px", opacity: 0 }}
           animate={{ x: "0px", opacity: 1 }}
           transition={{
