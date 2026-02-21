@@ -16,12 +16,12 @@ import {
   ConversationContent,
   ConversationEmptyState,
   ConversationScrollButton,
-} from "@/components/ai-elements/conversation";
+} from "@/components/ai/conversation";
 import {
   Message,
   MessageContent,
   MessageResponse,
-} from "@/components/ai-elements/message";
+} from "@/components/ai/message";
 import { ChatInput } from "@/components/ai/chat-input";
 import { User, Sparkles, CheckCircle, XCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
