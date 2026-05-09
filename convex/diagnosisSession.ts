@@ -1,6 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { DISEASES } from "@/lib/constants";
+import { DISEASES } from "../lib/constants";
 
 export const createSession = mutation({
   args: {},
