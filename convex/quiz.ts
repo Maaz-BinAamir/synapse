@@ -31,14 +31,9 @@ export const createQuiz = mutation({
       ];
     }
 
-    const uniqueQuestions = shuffledQuestions.filter(
-      (question, index, array) =>
-        index ===
-        array.findIndex((candidate) => candidate._id === question._id),
-    );
-    const quizQuestions = uniqueQuestions.slice(
+    const quizQuestions = shuffledQuestions.slice(
       0,
-      Math.min(QUESTION_COUNT, uniqueQuestions.length),
+      Math.min(QUESTION_COUNT, shuffledQuestions.length),
     );
 
     for (const question of quizQuestions) {
