@@ -13,6 +13,8 @@ Coverage summary:
 
 ## Unit Test
 
+Latest unit-test verification: `npm run test:unit` completed successfully with 6 test files passed and 49 test cases passed.
+
 | Test ID | Module Name | Function Name | Test Description | Preconditions | Input / Test Data | Expected Output | Actual Output | Pass/Fail | Remarks |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | UT-001 | Posts | `create()` | Create post for authenticated user | Identity present | `{ title: "First post", body: "Hello world" }` | Post inserted with zeroed counters | Post persisted with `authorId=user-1`, `commentCount=0`, `likeCount=0`, `viewCount=0` | Pass | Executed with `convex-test` identity |
@@ -43,8 +45,27 @@ Coverage summary:
 | UT-026 | Questions | `createQuestion()` | Accept valid answer index | Question payload valid | `correctOption=0` | Question inserted | Question persisted with `correctOption=0` | Pass | Validation success path |
 | UT-027 | Questions | `createQuestion()` | Reject out-of-range answer index | No extra setup | `options=["A","B"], correctOption=2` | Throw validation error | Threw `Invalid correct option index` | Pass | Guard clause covered |
 | UT-028 | Quiz | `createQuiz()` | Cap generated quiz to 10 questions | 12 questions seeded | `{ test: "PLAB" }` | Exactly 10 quiz questions linked | Created quiz with 10 `quizQuestions` rows | Pass | Selection cap verified |
-| UT-029 | Chat API Route | `POST()` | Reject unauthenticated chat requests | Auth mock returns false | `{ sessionId: "session-1", messages: [] }` | HTTP 401 | Returned `401 Unauthorized` | Pass | External auth mocked |
-| UT-030 | Proxy | `default export` | Redirect guests from protected routes | Auth mock returns false | Request to `/dashboard` | 307 redirect to `/signin` | Returned status `307` with `location=http://localhost/signin` | Pass | Middleware/proxy behavior mocked |
+| UT-029 | Quiz | `createQuiz()` | Reject guest quiz creation | No identity | `{ test: "PLAB" }` | Throw auth error | Threw `Not authenticated` | Pass | Negative auth guard |
+| UT-030 | Quiz | `getQuizQuestions()` | Return questions linked to a quiz | 2 PLAB questions seeded and quiz created | `{ quizId }` | 2 quiz question records returned | Returned 2 questions | Pass | Quiz-question relation verified |
+| UT-031 | Quiz | `finishQuiz()` / `getQuizResults()` | Score selected answers | 2 questions seeded; one selected correctly and one incorrectly | `{ quizId }` with selected options `[0, 0]` | Quiz score is 1 and two result rows are returned | Returned `score=1` and 2 result entries | Pass | Result calculation verified |
+| UT-032 | Quiz | `getQuizResults()` | Missing quiz handling | Quiz row created then deleted | Deleted `quizId` | Throw not found error | Threw `Quiz not found` | Pass | Negative lookup |
+| UT-033 | Diagnosis Session | `createSession()` | Create diagnosis session for authenticated user | Identity present | `{}` with `subject=doctor-1` | Session stored for current user with disease | Created session with `userId=doctor-1` and non-empty disease | Pass | Random disease selection mocked |
+| UT-034 | Diagnosis Session | `createSession()` | Reject guest diagnosis session creation | No identity | `{}` | Throw auth error | Threw `Not authenticated` | Pass | Negative auth guard |
+| UT-035 | Diagnosis Session | `submitAnswer()` | Submit owner answer and return correct answer | Session owned by `doctor-1` | `{ sessionId, answer: "Sorethroat/Respiratory tract infections" }` | Return correct answer and persist submitted answer | Returned session disease as `correctAnswer`; saved `userAnswer` | Pass | Owner write path verified |
+| UT-036 | Diagnosis Session | `submitAnswer()` | Reject answer submitted by different user | Session owned by `doctor-1`; request from `doctor-2` | `{ sessionId, answer: "Wrong user" }` | Throw access error | Threw `Session not found or access denied` | Pass | Ownership guard |
+| UT-037 | Dashboard | `getQuizStats()` | Return only completed quiz scores in chronological order | Two scored quizzes and one incomplete quiz seeded | Authenticated `learner-1` query | Incomplete quiz excluded; scores returned in insertion order | Returned scores `[9, 7]` | Pass | Dashboard quiz aggregation |
+| UT-038 | Dashboard | `getDiagnosisStats()` | Normalize diagnosis correctness checks | One matching answer with whitespace/case difference and one wrong answer seeded | Authenticated `doctor-1` query | Correctness flags `[true, false]` | Returned `isCorrect` values `[true, false]` | Pass | Case/trim normalization verified |
+| UT-039 | Dashboard | `getRecentViewedPosts()` | Return recent viewed posts with author names and skip deleted posts | Profile, visible post, deleted viewed post, and view rows seeded | Authenticated `viewer-1` query | Only existing viewed post returned with author display name | Returned 1 post titled `Viewed post` with `authorName=mentor` | Pass | Missing-post filter verified |
+| UT-040 | Chat API Route | `POST()` | Reject unauthenticated chat requests | Auth mock returns false | `{ sessionId: "session-1", messages: [] }` | HTTP 401 | Returned `401 Unauthorized` | Pass | External auth mocked |
+| UT-041 | Chat API Route | `POST()` | Reject invalid chat payload | Authenticated request with missing `sessionId` | `{ messages: [] }` | HTTP 400 | Returned `400 Invalid request payload` | Pass | Request validation branch |
+| UT-042 | Chat API Route | `POST()` | Reject chat for missing diagnosis session | Authenticated request; Convex session query returns `null` | `{ sessionId: "session-1", messages: [{ id: "1", role: "user", parts: [] }] }` | HTTP 404 | Returned `404 Diagnosis session not found` | Pass | Session existence guard |
+| UT-043 | Chat API Route | `POST()` | Stream AI response for valid chat request | Authenticated request; diagnosis session disease exists | `{ sessionId: "session-1", messages: [...] }` | Stream response returned; model and system prompt configured | Returned mocked stream response; system prompt contained `Malaria` | Pass | Groq and AI SDK mocked |
+| UT-044 | Proxy | `default export` | Allow guest access to public route | Auth mock returns false | Request to `/` | Continue with HTTP 200 | Returned status `200` | Pass | Public route allowed |
+| UT-045 | Proxy | `default export` | Redirect guests from protected routes | Auth mock returns false | Request to `/dashboard` | 307 redirect to `/signin` | Returned status `307` with `location=http://localhost/signin` | Pass | Middleware/proxy behavior mocked |
+| UT-046 | Proxy | `default export` | Allow authenticated users on protected routes | Auth mock returns true | Request to `/dashboard` | Continue with HTTP 200 | Returned status `200` | Pass | Authenticated protected-route access |
+| UT-047 | Proxy | `default export` | Redirect authenticated users away from auth routes | Auth mock returns true | Request to `/signin` | 307 redirect to `/dashboard` | Returned status `307` with `location=http://localhost/dashboard` | Pass | Prevents signed-in users from auth pages |
+| UT-048 | Utils | `cn()` | Merge conditional class names | Utility imported | `cn("px-2", false && "hidden", "py-4")` | Falsey class omitted | Returned `px-2 py-4` | Pass | `clsx` behavior verified |
+| UT-049 | Utils | `cn()` | Resolve conflicting Tailwind classes | Utility imported | `cn("px-2", "px-4", "text-sm")` | Later conflicting padding class wins | Returned `px-4 text-sm` | Pass | `tailwind-merge` behavior verified |
 
 ## Integration Test
 
